@@ -3,390 +3,837 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>波子機遊戲</title>
+    <title>彈珠波子機</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
-            min-height: 100vh;
+            background: #121212;
+            font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
             padding: 20px;
         }
         
         .game-container {
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 20px;
-            padding: 30px;
+            position: relative;
+            width: 400px;
+            height: 600px;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            border-radius: 15px;
+            overflow: hidden;
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
             border: 3px solid gold;
         }
         
-        h1 {
-            color: gold;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
-            font-size: 2.5rem;
+        .pinball-table {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNjAwIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvc3ZnPg==') repeat;
+            overflow: hidden;
         }
         
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-            background: rgba(30, 30, 30, 0.7);
-            padding: 15px;
+        .score-board {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
             border-radius: 10px;
-            border: 2px solid #444;
+            display: flex;
+            justify-content: space-between;
+            color: gold;
+            font-weight: bold;
+            z-index: 10;
         }
         
-        .stat-box {
-            color: white;
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .score-value {
             font-size: 1.2rem;
         }
         
-        .stat-value {
-            color: gold;
-            font-weight: bold;
-            font-size: 1.4rem;
-        }
-        
-        .slots-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 30px 0;
-        }
-        
-        .slot {
-            width: 100px;
-            height: 100px;
-            background: #222;
+        .play-area {
+            position: absolute;
+            top: 60px;
+            left: 10px;
+            right: 10px;
+            bottom: 80px;
+            background: #000;
             border-radius: 10px;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        
+        .flippers {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .flipper {
+            width: 60px;
+            height: 20px;
+            background: #ff6600;
+            border-radius: 10px;
+            transform-origin: center bottom;
+            transition: transform 0.1s ease;
+            cursor: pointer;
+        }
+        
+        .flipper.left {
+            transform: rotate(-45deg);
+        }
+        
+        .flipper.right {
+            transform: rotate(45deg);
+        }
+        
+        .flipper.active {
+            background: #ffcc00;
+        }
+        
+        .ball {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            z-index: 5;
+        }
+        
+        .bumper {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #ff6600, #ff0000);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.8);
+            cursor: pointer;
+        }
+        
+        .target {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 255, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            position: relative;
-            border: 3px solid #444;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
-        }
-        
-        .slot-symbol {
-            font-size: 3.5rem;
-            transition: transform 0.3s ease;
-        }
-        
-        .slot.active {
-            animation: spin 0.8s ease-out;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotateX(0); }
-            100% { transform: rotateX(360deg); }
-        }
-        
-        .controls {
-            margin: 25px 0;
-        }
-        
-        .spin-btn {
-            background: linear-gradient(to bottom, #ff9900, #cc6600);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.4rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
             font-weight: bold;
-            letter-spacing: 2px;
+            color: black;
+            cursor: pointer;
         }
         
-        .spin-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
-            background: linear-gradient(to bottom, #ffaa00, #dd7700);
+        .ramp {
+            position: absolute;
+            background: linear-gradient(to bottom, #ffcc00, #ff9900);
+            border-radius: 10px 10px 0 0;
+            transform-origin: bottom center;
+            cursor: pointer;
         }
         
-        .spin-btn:active {
-            transform: translateY(1px);
+        .launch-button {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 30px;
+            background: #ff6600;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
         }
         
-        .spin-btn:disabled {
-            background: #555;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+        .launch-button:hover {
+            background: #ff9900;
         }
         
         .message {
-            min-height: 40px;
-            margin: 20px 0;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 1.3rem;
-            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 30px;
+            border-radius: 15px;
             color: gold;
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+            font-size: 1.2rem;
+            text-align: center;
+            z-index: 20;
+            display: none;
         }
         
-        .win-message {
-            color: #ffcc00;
-            animation: pulse 1s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .symbols-info {
-            margin-top: 25px;
+        .controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
             color: #ccc;
-            font-size: 0.9rem;
-            line-height: 1.6;
+            font-size: 0.8rem;
         }
         
-        .symbol-item {
-            display: inline-block;
-            margin: 0 10px;
+        .game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: gold;
+            font-size: 2rem;
+            font-weight: bold;
+            z-index: 30;
+            display: none;
         }
         
-        .symbol-icon {
-            font-size: 1.5rem;
-            margin-right: 5px;
-        }
-        
-        .payline {
-            height: 5px;
-            background: gold;
-            margin: 10px auto;
-            width: 80%;
-            border-radius: 2px;
-            box-shadow: 0 0 10px gold;
-        }
-        
-        .instructions {
+        .restart-btn {
             margin-top: 20px;
-            color: #aaa;
-            font-size: 0.9rem;
-            line-height: 1.5;
+            padding: 10px 20px;
+            background: #ff6600;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .restart-btn:hover {
+            background: #ff9900;
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <h1>🎰 波子機遊戲 🎰</h1>
-        
-        <div class="stats">
-            <div class="stat-box">
-                <div>餘額</div>
-                <div class="stat-value" id="balance">100</div>
+        <div class="pinball-table">
+            <div class="score-board">
+                <div class="score-item">
+                    <div class="score-label">分數</div>
+                    <div class="score-value" id="score">0</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">球數</div>
+                    <div class="score-value" id="balls">3</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">等級</div>
+                    <div class="score-value" id="level">1</div>
+                </div>
             </div>
-            <div class="stat-box">
-                <div>下注</div>
-                <div class="stat-value" id="bet">10</div>
+            
+            <div class="play-area" id="playArea">
+                <!-- 彈珠會動態生成 -->
             </div>
-            <div class="stat-box">
-                <div>贏取</div>
-                <div class="stat-value" id="win">0</div>
+            
+            <div class="flippers">
+                <div class="flipper left" id="leftFlipper"></div>
+                <div class="flipper right" id="rightFlipper"></div>
             </div>
-        </div>
-        
-        <div class="payline"></div>
-        
-        <div class="slots-container">
-            <div class="slot" id="slot1">
-                <div class="slot-symbol">🍒</div>
+            
+            <div class="launch-button" id="launchButton">發射</div>
+            
+            <div class="controls">
+                <div>← → 控制擋板 | 空格鍵發射</div>
             </div>
-            <div class="slot" id="slot2">
-                <div class="slot-symbol">🍋</div>
+            
+            <div class="message" id="message">按空格鍵或點擊發射按鈕開始遊戲！</div>
+            
+            <div class="game-over" id="gameOver">
+                <div>遊戲結束！</div>
+                <div id="finalScore">最終分數：0</div>
+                <div class="restart-btn" id="restartBtn">重新開始</div>
             </div>
-            <div class="slot" id="slot3">
-                <div class="slot-symbol">🔔</div>
-            </div>
-        </div>
-        
-        <div class="payline"></div>
-        
-        <div class="message" id="message">準備好開始遊戲了嗎？</div>
-        
-        <div class="controls">
-            <button class="spin-btn" id="spinBtn">旋轉！</button>
-        </div>
-        
-        <div class="symbols-info">
-            <div class="symbol-item"><span class="symbol-icon">🍒</span> 櫻桃 x3 = 下注x2</div>
-            <div class="symbol-item"><span class="symbol-icon">🍋</span> 檸檬 x3 = 下注x3</div>
-            <div class="symbol-item"><span class="symbol-icon">🔔</span> 鈴鐺 x3 = 下注x5</div>
-            <div class="symbol-item"><span class="symbol-icon">💎</span> 寶石 x3 = 下注x10</div>
-            <div class="symbol-item"><span class="symbol-icon">7️⃣</span> 幸運7 x3 = 下注x20</div>
-        </div>
-        
-        <div class="instructions">
-            <p>每次旋轉消耗 10 點。匹配三個相同符號即可獲獎！</p>
-            <p>餘額不足時遊戲結束，點擊頁面任意位置重新開始。</p>
         </div>
     </div>
 
     <script>
         // 遊戲變數
-        let balance = 100;
-        const bet = 10;
-        let isSpinning = false;
-        
-        // 符號陣列（包含權重）
-        const symbols = [
-            { symbol: '🍒', weight: 30, payout: 2 },
-            { symbol: '🍋', weight: 25, payout: 3 },
-            { symbol: '🔔', weight: 20, payout: 5 },
-            { symbol: '💎', weight: 15, payout: 10 },
-            { symbol: '7️⃣', weight: 10, payout: 20 }
-        ];
+        let score = 0;
+        let ballsLeft = 3;
+        let currentLevel = 1;
+        let isLaunching = false;
+        let ball = null;
+        let gameActive = false;
+        let gravity = 0.5;
+        let friction = 0.98;
+        let bounceFactor = 0.8;
+        let flippers = [];
+        let bumpers = [];
+        let targets = [];
+        let ramps = [];
+        let ballSpeed = { x: 0, y: 0 };
+        let ballPos = { x: 0, y: 0 };
+        let lastTime = 0;
+        let animationId = null;
         
         // DOM 元素
-        const balanceEl = document.getElementById('balance');
-        const betEl = document.getElementById('bet');
-        const winEl = document.getElementById('win');
+        const playArea = document.getElementById('playArea');
+        const scoreEl = document.getElementById('score');
+        const ballsEl = document.getElementById('balls');
+        const levelEl = document.getElementById('level');
+        const launchButton = document.getElementById('launchButton');
+        const leftFlipper = document.getElementById('leftFlipper');
+        const rightFlipper = document.getElementById('rightFlipper');
         const messageEl = document.getElementById('message');
-        const spinBtn = document.getElementById('spinBtn');
-        const slots = [
-            document.getElementById('slot1'),
-            document.getElementById('slot2'),
-            document.getElementById('slot3')
-        ];
+        const gameOverEl = document.getElementById('gameOver');
+        const finalScoreEl = document.getElementById('finalScore');
+        const restartBtn = document.getElementById('restartBtn');
         
-        // 初始化
-        betEl.textContent = bet;
-        updateBalance();
+        // 初始化遊戲
+        function initGame() {
+            score = 0;
+            ballsLeft = 3;
+            currentLevel = 1;
+            gameActive = false;
+            ball = null;
+            ballSpeed = { x: 0, y: 0 };
+            ballPos = { x: 0, y: 0 };
+            
+            updateScore();
+            createObstacles();
+            showStartMessage();
+            
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
         
-        // 旋轉按鈕事件
-        spinBtn.addEventListener('click', spin);
+        // 創建障礙物
+        function createObstacles() {
+            // 清除現有障礙物
+            bumpers.forEach(b => b.remove());
+            targets.forEach(t => t.remove());
+            ramps.forEach(r => r.remove());
+            bumpers = [];
+            targets = [];
+            ramps = [];
+            
+            // 創建彈珠
+            if (ball) {
+                ball.remove();
+                ball = null;
+            }
+            
+            // 創建彈珠
+            ball = document.createElement('div');
+            ball.className = 'ball';
+            playArea.appendChild(ball);
+            
+            // 設置初始位置
+            ballPos = { 
+                x: playArea.offsetWidth / 2 - 7.5, 
+                y: playArea.offsetHeight - 60 
+            };
+            ball.style.left = ballPos.x + 'px';
+            ball.style.top = ballPos.y + 'px';
+            
+            // 創建彈珠台元素
+            createBumpers();
+            createTargets();
+            createRamps();
+        }
         
-        // 點擊任意位置重新開始
-        document.body.addEventListener('click', () => {
-            if (balance <= 0) {
-                resetGame();
+        // 創建彈珠
+        function createBumpers() {
+            // 上方三個彈珠
+            for (let i = 0; i < 3; i++) {
+                const bumper = document.createElement('div');
+                bumper.className = 'bumper';
+                bumper.style.left = (100 + i * 100) + 'px';
+                bumper.style.top = '100px';
+                playArea.appendChild(bumper);
+                bumper.addEventListener('click', () => hitBumper(bumper));
+                bumpers.push(bumper);
+            }
+            
+            // 中間兩個彈珠
+            for (let i = 0; i < 2; i++) {
+                const bumper = document.createElement('div');
+                bumper.className = 'bumper';
+                bumper.style.left = (150 + i * 80) + 'px';
+                bumper.style.top = '250px';
+                playArea.appendChild(bumper);
+                bumper.addEventListener('click', () => hitBumper(bumper));
+                bumpers.push(bumper);
+            }
+            
+            // 下方一個彈珠
+            const bumper = document.createElement('div');
+            bumper.className = 'bumper';
+            bumper.style.left = '200px';
+            bumper.style.top = '400px';
+            playArea.appendChild(bumper);
+            bumper.addEventListener('click', () => hitBumper(bumper));
+            bumpers.push(bumper);
+        }
+        
+        // 創建目標
+        function createTargets() {
+            // 左上角目標
+            const target1 = document.createElement('div');
+            target1.className = 'target';
+            target1.textContent = '10';
+            target1.style.left = '50px';
+            target1.style.top = '50px';
+            playArea.appendChild(target1);
+            target1.addEventListener('click', () => hitTarget(target1, 10));
+            targets.push(target1);
+            
+            // 右上角目標
+            const target2 = document.createElement('div');
+            target2.className = 'target';
+            target2.textContent = '20';
+            target2.style.right = '50px';
+            target2.style.top = '50px';
+            playArea.appendChild(target2);
+            target2.addEventListener('click', () => hitTarget(target2, 20));
+            targets.push(target2);
+            
+            // 中央目標
+            const target3 = document.createElement('div');
+            target3.className = 'target';
+            target3.textContent = '30';
+            target3.style.left = '180px';
+            target3.style.top = '200px';
+            playArea.appendChild(target3);
+            target3.addEventListener('click', () => hitTarget(target3, 30));
+            targets.push(target3);
+            
+            // 下方目標
+            const target4 = document.createElement('div');
+            target4.className = 'target';
+            target4.textContent = '50';
+            target4.style.left = '170px';
+            target4.style.top = '350px';
+            playArea.appendChild(target4);
+            target4.addEventListener('click', () => hitTarget(target4, 50));
+            targets.push(target4);
+        }
+        
+        // 創建斜坡
+        function createRamps() {
+            // 左側斜坡
+            const ramp1 = document.createElement('div');
+            ramp1.className = 'ramp';
+            ramp1.style.width = '100px';
+            ramp1.style.height = '30px';
+            ramp1.style.left = '50px';
+            ramp1.style.top = '150px';
+            ramp1.style.transform = 'rotate(-20deg)';
+            playArea.appendChild(ramp1);
+            ramp1.addEventListener('click', () => hitRamp(ramp1));
+            ramps.push(ramp1);
+            
+            // 右側斜坡
+            const ramp2 = document.createElement('div');
+            ramp2.className = 'ramp';
+            ramp2.style.width = '100px';
+            ramp2.style.height = '30px';
+            ramp2.style.right = '50px';
+            ramp2.style.top = '150px';
+            ramp2.style.transform = 'rotate(20deg)';
+            playArea.appendChild(ramp2);
+            ramp2.addEventListener('click', () => hitRamp(ramp2));
+            ramps.push(ramp2);
+            
+            // 底部斜坡
+            const ramp3 = document.createElement('div');
+            ramp3.className = 'ramp';
+            ramp3.style.width = '200px';
+            ramp3.style.height = '20px';
+            ramp3.style.left = '100px';
+            ramp3.style.bottom = '50px';
+            ramp3.style.transform = 'rotate(0deg)';
+            playArea.appendChild(ramp3);
+            ramp3.addEventListener('click', () => hitRamp(ramp3));
+            ramps.push(ramp3);
+        }
+        
+        // 更新分數顯示
+        function updateScore() {
+            scoreEl.textContent = score;
+            ballsEl.textContent = ballsLeft;
+            levelEl.textContent = currentLevel;
+        }
+        
+        // 顯示開始訊息
+        function showStartMessage() {
+            messageEl.style.display = 'block';
+            messageEl.textContent = '按空格鍵或點擊發射按鈕開始遊戲！';
+            gameActive = false;
+        }
+        
+        // 開始遊戲
+        function startGame() {
+            if (ballsLeft <= 0) {
+                endGame();
+                return;
+            }
+            
+            messageEl.style.display = 'none';
+            gameActive = true;
+            ballSpeed = { x: 0, y: 0 };
+            
+            // 將彈珠移到發射位置
+            ballPos = { 
+                x: playArea.offsetWidth / 2 - 7.5, 
+                y: playArea.offsetHeight - 60 
+            };
+            ball.style.left = ballPos.x + 'px';
+            ball.style.top = ballPos.y + 'px';
+            
+            // 啟動動畫循環
+            lastTime = performance.now();
+            animate();
+        }
+        
+        // 發射彈珠
+        function launchBall() {
+            if (!gameActive || isLaunching) return;
+            
+            isLaunching = true;
+            ballSpeed = { x: (Math.random() - 0.5) * 4, y: -15 };
+            
+            setTimeout(() => {
+                isLaunching = false;
+            }, 1000);
+        }
+        
+        // 擋板控制
+        function activateFlipper(flipper, direction) {
+            flipper.classList.add('active');
+            if (direction === 'left') {
+                flipper.style.transform = 'rotate(-20deg)';
+            } else {
+                flipper.style.transform = 'rotate(20deg)';
+            }
+            
+            setTimeout(() => {
+                flipper.classList.remove('active');
+                if (direction === 'left') {
+                    flipper.style.transform = 'rotate(-45deg)';
+                } else {
+                    flipper.style.transform = 'rotate(45deg)';
+                }
+            }, 200);
+        }
+        
+        // 撞到彈珠
+        function hitBumper(bumper) {
+            score += 10;
+            updateScore();
+            playSound('bumper');
+            
+            // 添加動畫效果
+            bumper.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                bumper.style.transform = 'scale(1)';
+            }, 100);
+        }
+        
+        // 撞到目標
+        function hitTarget(target, points) {
+            score += points;
+            updateScore();
+            playSound('target');
+            
+            // 添加動畫效果
+            target.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                target.style.transform = 'scale(1)';
+            }, 100);
+        }
+        
+        // 撞到斜坡
+        function hitRamp(ramp) {
+            score += 5;
+            updateScore();
+            playSound('ramp');
+            
+            // 添加動畫效果
+            ramp.style.transform = 'scale(1.1) rotate(5deg)';
+            setTimeout(() => {
+                ramp.style.transform = 'scale(1) rotate(0deg)';
+            }, 100);
+        }
+        
+        // 撞到擋板
+        function hitFlipper(flipper, side) {
+            score += 2;
+            updateScore();
+            playSound('flipper');
+            
+            // 根據擋板方向反彈
+            if (side === 'left') {
+                ballSpeed.x = Math.max(-8, ballSpeed.x - 2);
+            } else {
+                ballSpeed.x = Math.min(8, ballSpeed.x + 2);
+            }
+            
+            // 向上反彈
+            ballSpeed.y = -Math.abs(ballSpeed.y) * 0.8;
+        }
+        
+        // 結束遊戲
+        function endGame() {
+            gameActive = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            
+            finalScoreEl.textContent = `最終分數：${score}`;
+            gameOverEl.style.display = 'flex';
+        }
+        
+        // 重新開始遊戲
+        function restartGame() {
+            gameOverEl.style.display = 'none';
+            initGame();
+        }
+        
+        // 播放音效
+        function playSound(type) {
+            // 這裡可以添加實際音效，但為簡化範例，只用簡單提示
+            console.log(`播放 ${type} 音效`);
+        }
+        
+        // 主動畫循環
+        function animate(timestamp) {
+            if (!gameActive) return;
+            
+            const deltaTime = timestamp - lastTime;
+            lastTime = timestamp;
+            
+            // 更新彈珠位置
+            if (ball && gameActive) {
+                // 應用重力
+                ballSpeed.y += gravity;
+                
+                // 應用摩擦力
+                ballSpeed.x *= friction;
+                ballSpeed.y *= friction;
+                
+                // 更新位置
+                ballPos.x += ballSpeed.x;
+                ballPos.y += ballSpeed.y;
+                
+                // 檢查邊界碰撞
+                checkBoundaries();
+                
+                // 檢查與障礙物碰撞
+                checkCollisions();
+                
+                // 更新彈珠位置
+                ball.style.left = ballPos.x + 'px';
+                ball.style.top = ballPos.y + 'px';
+            }
+            
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        // 檢查邊界碰撞
+        function checkBoundaries() {
+            const ballRect = ball.getBoundingClientRect();
+            const playAreaRect = playArea.getBoundingClientRect();
+            
+            // 左右邊界
+            if (ballPos.x < 0) {
+                ballPos.x = 0;
+                ballSpeed.x = -ballSpeed.x * bounceFactor;
+                playSound('wall');
+            } else if (ballPos.x > playArea.offsetWidth - 15) {
+                ballPos.x = playArea.offsetWidth - 15;
+                ballSpeed.x = -ballSpeed.x * bounceFactor;
+                playSound('wall');
+            }
+            
+            // 上邊界
+            if (ballPos.y < 0) {
+                ballPos.y = 0;
+                ballSpeed.y = -ballSpeed.y * bounceFactor;
+                playSound('wall');
+            } 
+            // 下邊界（掉落）
+            else if (ballPos.y > playArea.offsetHeight - 15) {
+                // 如果掉出底部，失去一顆球
+                ballsLeft--;
+                updateScore();
+                
+                if (ballsLeft <= 0) {
+                    endGame();
+                } else {
+                    // 重新開始
+                    messageEl.style.display = 'block';
+                    messageEl.textContent = '按空格鍵或點擊發射按鈕繼續！';
+                    gameActive = false;
+                    ballSpeed = { x: 0, y: 0 };
+                    
+                    // 將彈珠移回發射位置
+                    ballPos = { 
+                        x: playArea.offsetWidth / 2 - 7.5, 
+                        y: playArea.offsetHeight - 60 
+                    };
+                    ball.style.left = ballPos.x + 'px';
+                    ball.style.top = ballPos.y + 'px';
+                }
+            }
+        }
+        
+        // 檢查與障礙物碰撞
+        function checkCollisions() {
+            const ballRect = ball.getBoundingClientRect();
+            
+            // 檢查與彈珠碰撞
+            bumpers.forEach(bumper => {
+                const bumperRect = bumper.getBoundingClientRect();
+                if (isColliding(ballRect, bumperRect)) {
+                    handleCollision(ballRect, bumperRect);
+                    hitBumper(bumper);
+                }
+            });
+            
+            // 檢查與目標碰撞
+            targets.forEach(target => {
+                const targetRect = target.getBoundingClientRect();
+                if (isColliding(ballRect, targetRect)) {
+                    handleCollision(ballRect, targetRect);
+                    hitTarget(target, parseInt(target.textContent));
+                }
+            });
+            
+            // 檢查與斜坡碰撞
+            ramps.forEach(ramp => {
+                const rampRect = ramp.getBoundingClientRect();
+                if (isColliding(ballRect, rampRect)) {
+                    handleCollision(ballRect, rampRect);
+                    hitRamp(ramp);
+                }
+            });
+            
+            // 檢查與左擋板碰撞
+            const leftFlipperRect = leftFlipper.getBoundingClientRect();
+            if (isColliding(ballRect, leftFlipperRect)) {
+                handleCollision(ballRect, leftFlipperRect);
+                hitFlipper(leftFlipper, 'left');
+            }
+            
+            // 檢查與右擋板碰撞
+            const rightFlipperRect = rightFlipper.getBoundingClientRect();
+            if (isColliding(ballRect, rightFlipperRect)) {
+                handleCollision(ballRect, rightFlipperRect);
+                hitFlipper(rightFlipper, 'right');
+            }
+        }
+        
+        // 判斷是否碰撞
+        function isColliding(rect1, rect2) {
+            return !(
+                rect1.right < rect2.left || 
+                rect1.left > rect2.right || 
+                rect1.bottom < rect2.top || 
+                rect1.top > rect2.bottom
+            );
+        }
+        
+        // 處理碰撞
+        function handleCollision(ballRect, obstacleRect) {
+            // 簡單碰撞處理
+            const overlapX = Math.min(ballRect.right - obstacleRect.left, obstacleRect.right - ballRect.left);
+            const overlapY = Math.min(ballRect.bottom - obstacleRect.top, obstacleRect.bottom - ballRect.top);
+            
+            if (overlapX < overlapY) {
+                // 左右碰撞
+                if (ballRect.left < obstacleRect.left) {
+                    ballPos.x = obstacleRect.left - 15;
+                } else {
+                    ballPos.x = obstacleRect.right;
+                }
+                ballSpeed.x = -ballSpeed.x * bounceFactor;
+            } else {
+                // 上下碰撞
+                if (ballRect.top < obstacleRect.top) {
+                    ballPos.y = obstacleRect.top - 15;
+                } else {
+                    ballPos.y = obstacleRect.bottom;
+                }
+                ballSpeed.y = -ballSpeed.y * bounceFactor;
+            }
+        }
+        
+        // 事件監聽器
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                if (!gameActive) {
+                    startGame();
+                } else {
+                    launchBall();
+                }
+            } else if (e.code === 'ArrowLeft') {
+                activateFlipper(leftFlipper, 'left');
+            } else if (e.code === 'ArrowRight') {
+                activateFlipper(rightFlipper, 'right');
             }
         });
         
-        // 旋轉功能
-        function spin() {
-            if (isSpinning || balance < bet) return;
-            
-            // 扣除下注金額
-            balance -= bet;
-            updateBalance();
-            winEl.textContent = '0';
-            messageEl.textContent = '旋轉中...';
-            messageEl.className = 'message';
-            
-            // 啟用旋轉狀態
-            isSpinning = true;
-            spinBtn.disabled = true;
-            
-            // 為每個轉輪添加旋轉動畫
-            slots.forEach(slot => {
-                slot.classList.add('active');
-            });
-            
-            // 模擬旋轉延遲後顯示結果
-            setTimeout(() => {
-                const results = [];
-                
-                // 生成隨機結果
-                for (let i = 0; i < 3; i++) {
-                    const randomSymbol = getRandomSymbol();
-                    results.push(randomSymbol);
-                    slots[i].querySelector('.slot-symbol').textContent = randomSymbol.symbol;
-                }
-                
-                // 移除旋轉動畫
-                slots.forEach(slot => {
-                    slot.classList.remove('active');
-                });
-                
-                // 計算獎金
-                const winAmount = calculateWin(results);
-                balance += winAmount;
-                winEl.textContent = winAmount;
-                
-                // 更新訊息
-                if (winAmount > 0) {
-                    messageEl.textContent = `恭喜！贏得 ${winAmount} 點！`;
-                    messageEl.className = 'message win-message';
-                } else {
-                    messageEl.textContent = '再試一次吧！';
-                    messageEl.className = 'message';
-                }
-                
-                updateBalance();
-                isSpinning = false;
-                spinBtn.disabled = false;
-                
-                // 檢查遊戲結束
-                if (balance < bet) {
-                    messageEl.textContent = '遊戲結束！點擊任意位置重新開始';
-                    spinBtn.disabled = true;
-                }
-            }, 1500);
-        }
-        
-        // 根據權重隨機選擇符號
-        function getRandomSymbol() {
-            const totalWeight = symbols.reduce((sum, symbol) => sum + symbol.weight, 0);
-            let random = Math.floor(Math.random() * totalWeight);
-            
-            for (const symbol of symbols) {
-                if (random < symbol.weight) {
-                    return symbol;
-                }
-                random -= symbol.weight;
+        launchButton.addEventListener('click', () => {
+            if (!gameActive) {
+                startGame();
+            } else {
+                launchBall();
             }
-            
-            return symbols[symbols.length - 1];
-        }
+        });
         
-        // 計算獎金
-        function calculateWin(results) {
-            // 檢查是否三個符號相同
-            if (results[0].symbol === results[1].symbol && results[1].symbol === results[2].symbol) {
-                return bet * results[0].payout;
+        leftFlipper.addEventListener('click', () => {
+            if (gameActive) {
+                activateFlipper(leftFlipper, 'left');
             }
-            return 0;
-        }
+        });
         
-        // 更新餘額顯示
-        function updateBalance() {
-            balanceEl.textContent = balance;
-        }
+        rightFlipper.addEventListener('click', () => {
+            if (gameActive) {
+                activateFlipper(rightFlipper, 'right');
+            }
+        });
         
-        // 重置遊戲
-        function resetGame() {
-            balance = 100;
-            updateBalance();
-            winEl.textContent = '0';
-            messageEl.textContent = '準備好開始遊戲了嗎？';
-            messageEl.className = 'message';
-            spinBtn.disabled = false;
-            
-            // 重置轉輪顯示
-            slots[0].querySelector('.slot-symbol').textContent = '🍒';
-            slots[1].querySelector('.slot-symbol').textContent = '🍋';
-            slots[2].querySelector('.slot-symbol').textContent = '🔔';
-        }
+        restartBtn.addEventListener('click', restartGame);
+        
+        // 初始化遊戲
+        initGame();
     </script>
 </body>
 </html>
