@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>波子機遊戲</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .game-container {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            border: 3px solid gold;
+        }
+        
+        h1 {
+            color: gold;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+            font-size: 2.5rem;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            background: rgba(30, 30, 30, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #444;
+        }
+        
+        .stat-box {
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .stat-value {
+            color: gold;
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+        
+        .slots-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .slot {
+            width: 100px;
+            height: 100px;
+            background: #222;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            border: 3px solid #444;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+        
+        .slot-symbol {
+            font-size: 3.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .slot.active {
+            animation: spin 0.8s ease-out;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotateX(0); }
+            100% { transform: rotateX(360deg); }
+        }
+        
+        .controls {
+            margin: 25px 0;
+        }
+        
+        .spin-btn {
+            background: linear-gradient(to bottom, #ff9900, #cc6600);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.4rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .spin-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+            background: linear-gradient(to bottom, #ffaa00, #dd7700);
+        }
+        
+        .spin-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .spin-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .message {
+            min-height: 40px;
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: gold;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+        }
+        
+        .win-message {
+            color: #ffcc00;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .symbols-info {
+            margin-top: 25px;
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .symbol-item {
+            display: inline-block;
+            margin: 0 10px;
+        }
+        
+        .symbol-icon {
+            font-size: 1.5rem;
+            margin-right: 5px;
+        }
+        
+        .payline {
+            height: 5px;
+            background: gold;
+            margin: 10px auto;
+            width: 80%;
+            border-radius: 2px;
+            box-shadow: 0 0 10px gold;
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎰 波子機遊戲 🎰</h1>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div>餘額</div>
+                <div class="stat-value" id="balance">100</div>
+            </div>
+            <div class="stat-box">
+                <div>下注</div>
+                <div class="stat-value" id="bet">10</div>
+            </div>
+            <div class="stat-box">
+                <div>贏取</div>
+                <div class="stat-value" id="win">0</div>
+            </div>
+        </div>
+        
+        <div class="payline"></div>
+        
+        <div class="slots-container">
+            <div class="slot" id="slot1">
+                <div class="slot-symbol">🍒</div>
+            </div>
+            <div class="slot" id="slot2">
+                <div class="slot-symbol">🍋</div>
+            </div>
+            <div class="slot" id="slot3">
+                <div class="slot-symbol">🔔</div>
+            </div>
+        </div>
+        
+        <div class="payline"></div>
+        
+        <div class="message" id="message">準備好開始遊戲了嗎？</div>
+        
+        <div class="controls">
+            <button class="spin-btn" id="spinBtn">旋轉！</button>
+        </div>
+        
+        <div class="symbols-info">
+            <div class="symbol-item"><span class="symbol-icon">🍒</span> 櫻桃 x3 = 下注x2</div>
+            <div class="symbol-item"><span class="symbol-icon">🍋</span> 檸檬 x3 = 下注x3</div>
+            <div class="symbol-item"><span class="symbol-icon">🔔</span> 鈴鐺 x3 = 下注x5</div>
+            <div class="symbol-item"><span class="symbol-icon">💎</span> 寶石 x3 = 下注x10</div>
+            <div class="symbol-item"><span class="symbol-icon">7️⃣</span> 幸運7 x3 = 下注x20</div>
+        </div>
+        
+        <div class="instructions">
+            <p>每次旋轉消耗 10 點。匹配三個相同符號即可獲獎！</p>
+            <p>餘額不足時遊戲結束，點擊頁面任意位置重新開始。</p>
+        </div>
+    </div>
+
+    <script>
+        // 遊戲變數
+        let balance = 100;
+        const bet = 10;
+        let isSpinning = false;
+        
+        // 符號陣列（包含權重）
+        const symbols = [
+            { symbol: '🍒', weight: 30, payout: 2 },
+            { symbol: '🍋', weight: 25, payout: 3 },
+            { symbol: '🔔', weight: 20, payout: 5 },
+            { symbol: '💎', weight: 15, payout: 10 },
+            { symbol: '7️⃣', weight: 10, payout: 20 }
+        ];
+        
+        // DOM 元素
+        const balanceEl = document.getElementById('balance');
+        const betEl = document.getElementById('bet');
+        const winEl = document.getElementById('win');
+        const messageEl = document.getElementById('message');
+        const spinBtn = document.getElementById('spinBtn');
+        const slots = [
+            document.getElementById('slot1'),
+            document.getElementById('slot2'),
+            document.getElementById('slot3')
+        ];
+        
+        // 初始化
+        betEl.textContent = bet;
+        updateBalance();
+        
+        // 旋轉按鈕事件
+        spinBtn.addEventListener('click', spin);
+        
+        // 點擊任意位置重新開始
+        document.body.addEventListener('click', () => {
+            if (balance <= 0) {
+                resetGame();
+            }
+        });
+        
+        // 旋轉功能
+        function spin() {
+            if (isSpinning || balance < bet) return;
+            
+            // 扣除下注金額
+            balance -= bet;
+            updateBalance();
+            winEl.textContent = '0';
+            messageEl.textContent = '旋轉中...';
+            messageEl.className = 'message';
+            
+            // 啟用旋轉狀態
+            isSpinning = true;
+            spinBtn.disabled = true;
+            
+            // 為每個轉輪添加旋轉動畫
+            slots.forEach(slot => {
+                slot.classList.add('active');
+            });
+            
+            // 模擬旋轉延遲後顯示結果
+            setTimeout(() => {
+                const results = [];
+                
+                // 生成隨機結果
+                for (let i = 0; i < 3; i++) {
+                    const randomSymbol = getRandomSymbol();
+                    results.push(randomSymbol);
+                    slots[i].querySelector('.slot-symbol').textContent = randomSymbol.symbol;
+                }
+                
+                // 移除旋轉動畫
+                slots.forEach(slot => {
+                    slot.classList.remove('active');
+                });
+                
+                // 計算獎金
+                const winAmount = calculateWin(results);
+                balance += winAmount;
+                winEl.textContent = winAmount;
+                
+                // 更新訊息
+                if (winAmount > 0) {
+                    messageEl.textContent = `恭喜！贏得 ${winAmount} 點！`;
+                    messageEl.className = 'message win-message';
+                } else {
+                    messageEl.textContent = '再試一次吧！';
+                    messageEl.className = 'message';
+                }
+                
+                updateBalance();
+                isSpinning = false;
+                spinBtn.disabled = false;
+                
+                // 檢查遊戲結束
+                if (balance < bet) {
+                    messageEl.textContent = '遊戲結束！點擊任意位置重新開始';
+                    spinBtn.disabled = true;
+                }
+            }, 1500);
+        }
+        
+        // 根據權重隨機選擇符號
+        function getRandomSymbol() {
+            const totalWeight = symbols.reduce((sum, symbol) => sum + symbol.weight, 0);
+            let random = Math.floor(Math.random() * totalWeight);
+            
+            for (const symbol of symbols) {
+                if (random < symbol.weight) {
+                    return symbol;
+                }
+                random -= symbol.weight;
+            }
+            
+            return symbols[symbols.length - 1];
+        }
+        
+        // 計算獎金
+        function calculateWin(results) {
+            // 檢查是否三個符號相同
+            if (results[0].symbol === results[1].symbol && results[1].symbol === results[2].symbol) {
+                return bet * results[0].payout;
+            }
+            return 0;
+        }
+        
+        // 更新餘額顯示
+        function updateBalance() {
+            balanceEl.textContent = balance;
+        }
+        
+        // 重置遊戲
+        function resetGame() {
+            balance = 100;
+            updateBalance();
+            winEl.textContent = '0';
+            messageEl.textContent = '準備好開始遊戲了嗎？';
+            messageEl.className = 'message';
+            spinBtn.disabled = false;
+            
+            // 重置轉輪顯示
+            slots[0].querySelector('.slot-symbol').textContent = '🍒';
+            slots[1].querySelector('.slot-symbol').textContent = '🍋';
+            slots[2].querySelector('.slot-symbol').textContent = '🔔';
+        }
+    </script>
+</body>
+</html>
