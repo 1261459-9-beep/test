@@ -290,7 +290,6 @@
         let gravity = 0.5;
         let friction = 0.98;
         let bounceFactor = 0.8;
-        let flippers = [];
         let bumpers = [];
         let targets = [];
         let ramps = [];
@@ -299,20 +298,199 @@
         let lastTime = 0;
         let animationId = null;
         let isGameStarted = false;
-        
-        // DOM 元素
-        const playArea = document.getElementById('playArea');
-        const scoreEl = document.getElementById('score');
-        const ballsEl = document.getElementById('balls');
-        const levelEl = document.getElementById('level');
-        const launchButton = document.getElementById('launchButton');
-        const leftFlipper = document.getElementById('leftFlipper');
-        const rightFlipper = document.getElementById('rightFlipper');
-        const messageEl = document.getElementById('message');
-        const gameOverEl = document.getElementById('gameOver');
-        const finalScoreEl = document.getElementById('finalScore');
-        const restartBtn = document.getElementById('restartBtn');
-        
+        let isBallLaunched = false; // 👈 新增：標記是否已發射
+    
+        // DOM 元素（略，不變）
+    
+        // 初始化遊戲
+        function initGame() {
+            score = 0;
+            ballsLeft = 3;
+            currentLevel = 1;
+            gameActive = true; // 遊戲容器始終可互動
+            isGameStarted = false;
+            isBallLaunched = false; // 重置發射狀態
+            ball = null;
+            ballSpeed = { x: 0, y: 0 };
+            ballPos = { x: 0, y: 0 };
+    
+            updateScore();
+            createObstacles();
+            showStartMessage();
+    
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            // 啟動主循環（即使未發射也要檢查輸入）
+            lastTime = performance.now();
+            animate();
+        }
+    
+        // 創建障礙物（略，不變）
+    
+        // 顯示開始訊息
+        function showStartMessage() {
+            messageEl.style.display = 'block';
+            messageEl.textContent = '按空格鍵或點擊發射按鈕開始遊戲！';
+            isGameStarted = false;
+            isBallLaunched = false;
+        }
+    
+        // 開始新一球（準備發射）
+        function startNewBall() {
+            if (ballsLeft <= 0) return;
+    
+            messageEl.style.display = 'none';
+            isGameStarted = true;
+            isBallLaunched = false; // 尚未發射
+    
+            // 將彈珠移到發射位置（底部中央）
+            ballPos = { 
+                x: playArea.offsetWidth / 2 - 7.5, 
+                y: playArea.offsetHeight - 60 
+            };
+            if (ball) {
+                ball.style.left = ballPos.x + 'px';
+                ball.style.top = ballPos.y + 'px';
+            }
+        }
+    
+        // 發射彈珠
+        function launchBall() {
+            if (!isGameStarted || isBallLaunched || isLaunching) return;
+    
+            isLaunching = true;
+            isBallLaunched = true; // 👈 標記已發射
+            // 隨機一點水平速度，避免直上直下
+            ballSpeed = { 
+                x: (Math.random() - 0.5) * 6, 
+                y: -15 
+            };
+    
+            setTimeout(() => {
+                isLaunching = false;
+            }, 500);
+        }
+    
+        // 擋板控制（略，不變）
+    
+        // 結束當前球（掉出底部）
+        function loseBall() {
+            ballsLeft--;
+            updateScore();
+    
+            if (ballsLeft <= 0) {
+                endGame();
+            } else {
+                messageEl.style.display = 'block';
+                messageEl.textContent = '按空格鍵或點擊發射按鈕繼續！';
+                isGameStarted = false;
+                isBallLaunched = false;
+                ballSpeed = { x: 0, y: 0 };
+    
+                // 彈珠回到底部等待下次發射
+                ballPos = { 
+                    x: playArea.offsetWidth / 2 - 7.5, 
+                    y: playArea.offsetHeight - 60 
+                };
+                if (ball) {
+                    ball.style.left = ballPos.x + 'px';
+                    ball.style.top = ballPos.y + 'px';
+                }
+            }
+        }
+    
+        // 主動畫循環
+        function animate(timestamp) {
+            const deltaTime = timestamp - lastTime;
+            lastTime = timestamp;
+    
+            // 更新彈珠位置（僅在已發射時）
+            if (ball && isBallLaunched) {
+                // 應用重力
+                ballSpeed.y += gravity;
+                // 摩擦
+                ballSpeed.x *= friction;
+                ballSpeed.y *= friction;
+                // 更新位置
+                ballPos.x += ballSpeed.x;
+                ballPos.y += ballSpeed.y;
+    
+                // 檢查邊界與碰撞
+                checkBoundaries();
+                checkCollisions();
+    
+                // 更新畫面
+                ball.style.left = ballPos.x + 'px';
+                ball.style.top = ballPos.y + 'px';
+            } else if (ball && !isBallLaunched && isGameStarted) {
+                // 未發射但已開始：保持在發射位置（防止重力拉下）
+                ballPos = { 
+                    x: playArea.offsetWidth / 2 - 7.5, 
+                    y: playArea.offsetHeight - 60 
+                };
+                ball.style.left = ballPos.x + 'px';
+                ball.style.top = ballPos.y + 'px';
+            }
+    
+            animationId = requestAnimationFrame(animate);
+        }
+    
+        // 檢查邊界碰撞
+        function checkBoundaries() {
+            // 左右
+            if (ballPos.x < 0) {
+                ballPos.x = 0;
+                ballSpeed.x = -ballSpeed.x * bounceFactor;
+            } else if (ballPos.x > playArea.offsetWidth - 15) {
+                ballPos.x = playArea.offsetWidth - 15;
+                ballSpeed.x = -ballSpeed.x * bounceFactor;
+            }
+    
+            // 上
+            if (ballPos.y < 0) {
+                ballPos.y = 0;
+                ballSpeed.y = -ballSpeed.y * bounceFactor;
+            }
+    
+            // 下（掉落）
+            if (ballPos.y > playArea.offsetHeight - 15) {
+                loseBall(); // 處理掉球
+            }
+        }
+    
+        // 其他函數（checkCollisions, isColliding, handleCollision, hitBumper... 等保持不變）
+    
+        // 事件監聽器
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (!isGameStarted) {
+                    startNewBall();
+                } else {
+                    launchBall();
+                }
+            } else if (e.code === 'ArrowLeft') {
+                if (isGameStarted) activateFlipper(leftFlipper, 'left');
+            } else if (e.code === 'ArrowRight') {
+                if (isGameStarted) activateFlipper(rightFlipper, 'right');
+            }
+        });
+    
+        launchButton.addEventListener('click', () => {
+            if (!isGameStarted) {
+                startNewBall();
+            } else {
+                launchBall();
+            }
+        });
+    
+        // 其他事件（略）
+    
+        // 初始化
+        initGame();
+    </script>
         // 初始化遊戲
         function initGame() {
             score = 0;
@@ -337,13 +515,6 @@
         // 創建障礙物
         function createObstacles() {
             // 清除現有障礙物
-            bumpers.forEach(b => b.remove());
-            targets.forEach(t => t.remove());
-            ramps.forEach(r => r.remove());
-            bumpers = [];
-            targets = [];
-            ramps = [];
-            
             // 創建彈珠
             if (ball) {
                 ball.remove();
@@ -845,4 +1016,10 @@
         initGame();
     </script>
 </body>
-</html>
+</html>            bumpers.forEach(b => b.remove());
+            targets.forEach(t => t.remove());
+            ramps.forEach(r => r.remove());
+            bumpers = [];
+            targets = [];
+            ramps = [];
+            
