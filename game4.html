@@ -188,7 +188,7 @@
             font-size: 1.2rem;
             text-align: center;
             z-index: 20;
-            display: none;
+            display: block;
         }
         
         .controls {
@@ -298,6 +298,7 @@
         let ballPos = { x: 0, y: 0 };
         let lastTime = 0;
         let animationId = null;
+        let isGameStarted = false;
         
         // DOM 元素
         const playArea = document.getElementById('playArea');
@@ -318,6 +319,7 @@
             ballsLeft = 3;
             currentLevel = 1;
             gameActive = false;
+            isGameStarted = false;
             ball = null;
             ballSpeed = { x: 0, y: 0 };
             ballPos = { x: 0, y: 0 };
@@ -495,6 +497,7 @@
             messageEl.style.display = 'block';
             messageEl.textContent = '按空格鍵或點擊發射按鈕開始遊戲！';
             gameActive = false;
+            isGameStarted = false;
         }
         
         // 開始遊戲
@@ -506,6 +509,7 @@
             
             messageEl.style.display = 'none';
             gameActive = true;
+            isGameStarted = true;
             ballSpeed = { x: 0, y: 0 };
             
             // 將彈珠移到發射位置
@@ -611,6 +615,7 @@
         // 結束遊戲
         function endGame() {
             gameActive = false;
+            isGameStarted = false;
             if (animationId) {
                 cancelAnimationFrame(animationId);
                 animationId = null;
@@ -798,22 +803,26 @@
         // 事件監聽器
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
-                if (!gameActive) {
+                if (!isGameStarted) {
                     startGame();
-                } else {
+                } else if (gameActive) {
                     launchBall();
                 }
             } else if (e.code === 'ArrowLeft') {
-                activateFlipper(leftFlipper, 'left');
+                if (gameActive) {
+                    activateFlipper(leftFlipper, 'left');
+                }
             } else if (e.code === 'ArrowRight') {
-                activateFlipper(rightFlipper, 'right');
+                if (gameActive) {
+                    activateFlipper(rightFlipper, 'right');
+                }
             }
         });
         
         launchButton.addEventListener('click', () => {
-            if (!gameActive) {
+            if (!isGameStarted) {
                 startGame();
-            } else {
+            } else if (gameActive) {
                 launchBall();
             }
         });
