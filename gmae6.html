@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beat Battle - 节奏对战</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            font-family: 'Arial Rounded MT Bold', 'Segoe UI', Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: white;
+        }
+        
+        #game-container {
+            position: relative;
+            width: 900px;
+            height: 600px;
+            background: linear-gradient(to bottom, #2c0735, #1a0a25);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 100, 200, 0.7),
+                        0 0 60px rgba(150, 50, 255, 0.5);
+            overflow: hidden;
+            border: 8px solid #ff1e8d;
+        }
+        
+        #stage {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(to top, #3a1c45, #2a0f35);
+            border-top: 4px solid #ff1e8d;
+            z-index: 1;
+        }
+        
+        #player, #opponent {
+            position: absolute;
+            bottom: 40px;
+            width: 150px;
+            height: 200px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center bottom;
+            transition: transform 0.1s ease;
+        }
+        
+        #player {
+            left: 100px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 200"><circle cx="75" cy="100" r="50" fill="%23ff5252"/><rect x="50" y="140" width="50" height="40" rx="10" fill="%23ff5252"/><circle cx="60" cy="85" r="8" fill="white"/><circle cx="90" cy="85" r="8" fill="white"/><circle cx="60" cy="85" r="4" fill="black"/><circle cx="90" cy="85" r="4" fill="black"/><path d="M65 110 Q75 120 85 110" stroke="black" stroke-width="3" fill="none"/></svg>');
+            transform: scaleX(-1);
+        }
+        
+        #opponent {
+            right: 100px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 200"><circle cx="75" cy="100" r="50" fill="%234cc9f0"/><rect x="50" y="140" width="50" height="40" rx="10" fill="%234cc9f0"/><circle cx="60" cy="85" r="8" fill="white"/><circle cx="90" cy="85" r="8" fill="white"/><circle cx="60" cy="85" r="4" fill="black"/><circle cx="90" cy="85" r="4" fill="black"/><path d="M65 115 Q75 110 85 115" stroke="black" stroke-width="3" fill="none"/></svg>');
+        }
+        
+        #arrow-container {
+            position: absolute;
+            left: 150px;
+            top: 0;
+            bottom: 0;
+            width: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .arrow-track {
+            position: relative;
+            height: 80px;
+            margin: 5px 0;
+            background: rgba(30, 10, 40, 0.6);
+            border-radius: 40px;
+            border: 3px solid #7a3bff;
+            overflow: hidden;
+        }
+        
+        .arrow-track::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 60px;
+            background: rgba(255, 30, 141, 0.3);
+            border-right: 4px dashed #ff1e8d;
+            z-index: 5;
+        }
+        
+        .arrow {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 10;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+        }
+        
+        .arrow.up { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><polygon points="30,10 50,40 40,40 40,50 20,50 20,40 10,40" fill="%23ffcc00"/></svg>'); }
+        .arrow.down { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><polygon points="30,50 10,20 20,20 20,10 40,10 40,20 50,20" fill="%234cc9f0"/></svg>'); }
+        .arrow.left { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><polygon points="10,30 40,10 40,20 50,20 50,40 40,40 40,50" fill="%23ff5252"/></svg>'); }
+        .arrow.right { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><polygon points="50,30 20,10 20,20 10,20 10,40 20,40 20,50" fill="%234ade80"/></svg>'); }
+        
+        .arrow.hit {
+            transform: scale(1.3);
+            opacity: 0.8;
+            filter: drop-shadow(0 0 10px white) drop-shadow(0 0 20px yellow);
+        }
+        
+        .arrow.miss {
+            opacity: 0.3;
+            transform: scale(0.8);
+        }
+        
+        #health-container {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            border: 3px solid #ff1e8d;
+            overflow: hidden;
+            z-index: 20;
+            box-shadow: 0 0 15px rgba(255, 30, 141, 0.7);
+        }
+        
+        #health-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(to right, #ff1e8d, #ff5252, #ffc107, #4ade80, #4cc9f0);
+            border-radius: 20px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+        
+        #health-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to right, 
+                rgba(255,255,255,0.2) 0%, 
+                rgba(255,255,255,0.4) 50%, 
+                rgba(255,255,255,0.2) 100%);
+            animation: health-shine 2s infinite;
+        }
+        
+        @keyframes health-shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        #judgment {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 80px;
+            font-weight: bold;
+            opacity: 0;
+            z-index: 30;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+            animation: judgment-fade 1s forwards;
+        }
+        
+        @keyframes judgment-fade {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+        }
+        
+        .sick { color: #ffd700; text-shadow: 0 0 20px #ffd700; }
+        .good { color: #4ade80; text-shadow: 0 0 15px #4ade80; }
+        .bad { color: #ff9e6d; text-shadow: 0 0 10px #ff9e6d; }
+        .miss { color: #ff5252; text-shadow: 0 0 15px #ff5252; }
+        
+        #score-container {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            text-align: right;
+            z-index: 20;
+            font-size: 28px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        
+        #score {
+            font-weight: bold;
+            color: #ffd700;
+            font-size: 42px;
+            margin-top: 5px;
+        }
+        
+        #combo {
+            font-size: 24px;
+            margin-top: 5px;
+            color: #ff1e8d;
+            font-weight: bold;
+        }
+        
+        #combo.active {
+            animation: combo-pulse 0.3s ease-in-out;
+        }
+        
+        @keyframes combo-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        #start-screen, #game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(20, 5, 30, 0.92);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #game-over {
+            display: none;
+        }
+        
+        h1 {
+            font-size: 72px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #ff1e8d, #ff5252, #ffc107, #4ade80, #4cc9f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            letter-spacing: -3px;
+            margin-bottom: 40px;
+            font-weight: 900;
+            text-stroke: 1px rgba(255, 255, 255, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 28px;
+            margin-bottom: 40px;
+            max-width: 700px;
+            line-height: 1.4;
+            color: #e0e0ff;
+        }
+        
+        .instructions {
+            background: rgba(40, 15, 60, 0.85);
+            border: 3px solid #7a3bff;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: 22px;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+        
+        .instructions kbd {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #ff1e8d;
+            border-radius: 8px;
+            padding: 3px 8px;
+            margin: 0 2px;
+            font-family: monospace;
+            font-weight: bold;
+            box-shadow: 0 0 5px rgba(255, 30, 141, 0.7);
+        }
+        
+        button {
+            background: linear-gradient(to bottom, #ff1e8d, #cc1670);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 32px;
+            border-radius: 50px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 2px;
+            box-shadow: 0 5px 0 #9e0f5a, 
+                        0 0 30px rgba(255, 30, 141, 0.7),
+                        0 0 60px rgba(255, 30, 141, 0.4);
+            transition: all 0.1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button:hover {
+            background: linear-gradient(to bottom, #ff3a9d, #e01a7a);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #9e0f5a,
+                        0 0 35px rgba(255, 30, 141, 0.8),
+                        0 0 70px rgba(255, 30, 141, 0.5);
+        }
+        
+        button:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #9e0f5a,
+                        0 0 25px rgba(255, 30, 141, 0.7),
+                        0 0 50px rgba(255, 30, 141, 0.4);
+        }
+        
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+            transform: scale(0);
+            transition: transform 0.5s ease;
+            border-radius: 50%;
+        }
+        
+        button:hover::after {
+            transform: scale(1);
+        }
+        
+        #beat-visualizer {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 15;
+        }
+        
+        .beat-light {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .beat-light.active {
+            background: #ff1e8d;
+            box-shadow: 0 0 20px #ff1e8d, 0 0 40px #ff1e8d;
+            transform: scale(1.3);
+        }
+        
+        .pulse {
+            animation: pulse 0.6s ease-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        .player-hit {
+            animation: hit-effect 0.2s ease-out;
+        }
+        
+        @keyframes hit-effect {
+            0% { transform: translateX(0) scaleX(-1); }
+            50% { transform: translateX(15px) scaleX(-1.1); }
+            100% { transform: translateX(0) scaleX(-1); }
+        }
+        
+        .opponent-hit {
+            animation: hit-effect-opponent 0.2s ease-out;
+        }
+        
+        @keyframes hit-effect-opponent {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-15px) scaleX(1.1); }
+            100% { transform: translateX(0); }
+        }
+        
+        #song-title {
+            position: absolute;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+            z-index: 20;
+            background: rgba(30, 10, 40, 0.7);
+            padding: 5px 20px;
+            border-radius: 20px;
+            border: 2px solid #ffcc00;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="stage"></div>
+        <div id="player"></div>
+        <div id="opponent"></div>
+        
+        <div id="arrow-container">
+            <div class="arrow-track"><div class="arrow up"></div></div>
+            <div class="arrow-track"><div class="arrow down"></div></div>
+            <div class="arrow-track"><div class="arrow left"></div></div>
+            <div class="arrow-track"><div class="arrow right"></div></div>
+        </div>
+        
+        <div id="health-container">
+            <div id="health-bar"></div>
+        </div>
+        
+        <div id="score-container">
+            <div>分数</div>
+            <div id="score">0</div>
+            <div id="combo">连击: 0</div>
+        </div>
+        
+        <div id="song-title">电子节拍对决</div>
+        
+        <div id="beat-visualizer">
+            <div class="beat-light"></div>
+            <div class="beat-light"></div>
+            <div class="beat-light"></div>
+            <div class="beat-light"></div>
+        </div>
+        
+        <div id="judgment">SICK</div>
+        
+        <div id="start-screen">
+            <h1>BEAT BATTLE</h1>
+            <div class="subtitle">在节奏的战场上击败对手！根据音乐节奏按下正确的方向键</div>
+            <div class="instructions">
+                使用方向键进行游戏: <kbd>←</kbd> <kbd>↓</kbd> <kbd>↑</kbd> <kbd>→</kbd><br>
+                在音符到达左侧判定区时按下对应按键
+            </div>
+            <button id="start-button">开始游戏</button>
+        </div>
+        
+        <div id="game-over">
+            <h1>游戏结束</h1>
+            <div class="subtitle" id="final-score">最终分数: 0</div>
+            <button id="restart-button">再玩一次</button>
+        </div>
+    </div>
+
+    <script>
+        // 游戏变量
+        const gameState = {
+            playing: false,
+            health: 100,
+            score: 0,
+            combo: 0,
+            maxCombo: 0,
+            notes: [],
+            activeNotes: [],
+            time: 0,
+            songProgress: 0,
+            bpm: 120,
+            noteSpeed: 3.5,
+            judgment: { sick: 0, good: 0, bad: 0, miss: 0 },
+            lastBeat: 0,
+            beatInterval: 0,
+            currentBeat: 0
+        };
+        
+        // DOM 元素
+        const gameContainer = document.getElementById('game-container');
+        const player = document.getElementById('player');
+        const opponent = document.getElementById('opponent');
+        const healthBar = document.getElementById('health-bar');
+        const scoreDisplay = document.getElementById('score');
+        const comboDisplay = document.getElementById('combo');
+        const judgmentDisplay = document.getElementById('judgment');
+        const startScreen = document.getElementById('start-screen');
+        const gameOverScreen = document.getElementById('game-over');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const startButton = document.getElementById('start-button');
+        const restartButton = document.getElementById('restart-button');
+        const beatLights = document.querySelectorAll('.beat-light');
+        const arrowTracks = document.querySelectorAll('.arrow-track');
+        
+        // 音符序列 (时间, 方向, 轨道)
+        // 方向: 0=上, 1=下, 2=左, 3=右
+        // 时间单位为毫秒
+        const songNotes = [
+            // 第1小节
+            { time: 1000, direction: 0, track: 0 },
+            { time: 1500, direction: 1, track: 1 },
+            { time: 2000, direction: 2, track: 2 },
+            { time: 2500, direction: 3, track: 3 },
+            
+            // 第2小节
+            { time: 3000, direction: 2, track: 2 },
+            { time: 3500, direction: 3, track: 3 },
+            { time: 4000, direction: 0, track: 0 },
+            { time: 4500, direction: 1, track: 1 },
+            
+            // 第3小节
+            { time: 5000, direction: 0, track: 0 },
+            { time: 5250, direction: 1, track: 1 },
+            { time: 5500, direction: 2, track: 2 },
+            { time: 5750, direction: 3, track: 3 },
+            { time: 6000, direction: 0, track: 0 },
+            { time: 6250, direction: 1, track: 1 },
+            { time: 6500, direction: 2, track: 2 },
+            { time: 6750, direction: 3, track: 3 },
+            
+            // 第4小节
+            { time: 7000, direction: 3, track: 3 },
+            { time: 7250, direction: 2, track: 2 },
+            { time: 7500, direction: 1, track: 1 },
+            { time: 7750, direction: 0, track: 0 },
+            { time: 8000, direction: 3, track: 3 },
+            { time: 8250, direction: 2, track: 2 },
+            { time: 8500, direction: 1, track: 1 },
+            { time: 8750, direction: 0, track: 0 },
+            
+            // 第5小节 - 更快的节奏
+            { time: 9000, direction: 0, track: 0 },
+            { time: 9250, direction: 2, track: 2 },
+            { time: 9500, direction: 1, track: 1 },
+            { time: 9750, direction: 3, track: 3 },
+            { time: 10000, direction: 0, track: 0 },
+            { time: 10250, direction: 2, track: 2 },
+            { time: 10500, direction: 1, track: 1 },
+            { time: 10750, direction: 3, track: 3 },
+            
+            // 第6小节
+            { time: 11000, direction: 2, track: 2 },
+            { time: 11250, direction: 0, track: 0 },
+            { time: 11500, direction: 3, track: 3 },
+            { time: 11750, direction: 1, track: 1 },
+            { time: 12000, direction: 2, track: 2 },
+            { time: 12250, direction: 0, track: 0 },
+            { time: 12500, direction: 3, track: 3 },
+            { time: 12750, direction: 1, track: 1 },
+            
+            // 第7小节 - 高潮
+            { time: 13000, direction: 0, track: 0 },
+            { time: 13125, direction: 1, track: 1 },
+            { time: 13250, direction: 2, track: 2 },
+            { time: 13375, direction: 3, track: 3 },
+            { time: 13500, direction: 0, track: 0 },
+            { time: 13625, direction: 1, track: 1 },
+            { time: 13750, direction: 2, track: 2 },
+            { time: 13875, direction: 3, track: 3 },
+            { time: 14000, direction: 0, track: 0 },
+            { time: 14125, direction: 1, track: 1 },
+            { time: 14250, direction: 2, track: 2 },
+            { time: 14375, direction: 3, track: 3 },
+            { time: 14500, direction: 0, track: 0 },
+            { time: 14625, direction: 1, track: 1 },
+            { time: 14750, direction: 2, track: 2 },
+            { time: 14875, direction: 3, track: 3 },
+            
+            // 第8小节 - 结尾
+            { time: 15000, direction: 3, track: 3 },
+            { time: 15250, direction: 1, track: 1 },
+            { time: 15500, direction: 2, track: 2 },
+            { time: 15750, direction: 0, track: 0 },
+            { time: 16000, direction: 3, track: 3 },
+            { time: 16250, direction: 1, track: 1 },
+            { time: 16500, direction: 2, track: 2 },
+            { time: 16750, direction: 0, track: 0 },
+            { time: 17000, direction: 3, track: 3 },
+            { time: 17250, direction: 1, track: 1 },
+            { time: 17500, direction: 2, track: 2 },
+            { time: 17750, direction: 0, track: 0 },
+            { time: 18000, direction: 3, track: 3 },
+            { time: 18250, direction: 1, track: 1 },
+            { time: 18500, direction: 2, track: 2 },
+            { time: 18750, direction: 0, track: 0 }
+        ];
+        
+        // 初始化游戏
+        function initGame() {
+            // 重置游戏状态
+            gameState.playing = true;
+            gameState.health = 100;
+            gameState.score = 0;
+            gameState.combo = 0;
+            gameState.maxCombo = 0;
+            gameState.notes = [...songNotes];
+            gameState.activeNotes = [];
+            gameState.time = 0;
+            gameState.songProgress = 0;
+            gameState.bpm = 120;
+            gameState.noteSpeed = 3.5;
+            gameState.judgment = { sick: 0, good: 0, bad: 0, miss: 0 };
+            gameState.lastBeat = Date.now();
+            gameState.beatInterval = 60000 / gameState.bpm; // 毫秒
+            gameState.currentBeat = 0;
+            
+            // 重置UI
+            healthBar.style.width = `${gameState.health}%`;
+            scoreDisplay.textContent = '0';
+            comboDisplay.textContent = '连击: 0';
+            comboDisplay.className = '';
+            
+            // 隐藏开始屏幕
+            startScreen.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            
+            // 开始游戏循环
+            gameLoop();
+            
+            // 模拟背景音乐节奏（实际游戏中应使用音频分析）
+            simulateMusic();
+        }
+        
+        // 游戏主循环
+        function gameLoop() {
+            if (!gameState.playing) return;
+            
+            const now = Date.now();
+            gameState.time = now;
+            gameState.songProgress += 16.67; // 假设60fps
+            
+            // 生成新音符
+            generateNotes();
+            
+            // 更新音符位置
+            updateNotes();
+            
+            // 检查 missed notes
+            checkMissedNotes();
+            
+            // 检查游戏结束
+            if (gameState.health <= 0) {
+                endGame();
+                return;
+            }
+            
+            // 检查歌曲是否结束
+            if (gameState.songProgress > 19000 && gameState.activeNotes.length === 0) {
+                endGame();
+                return;
+            }
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // 生成音符
+        function generateNotes() {
+            // 每100毫秒检查一次新音符（性能优化）
+            if (gameState.lastNoteCheck && gameState.time - gameState.lastNoteCheck < 100) {
+                return;
+            }
+            gameState.lastNoteCheck = gameState.time;
+            
+            const currentTime = gameState.songProgress;
+            
+            // 添加即将出现的音符（提前1.5秒生成）
+            for (let i = gameState.notes.length - 1; i >= 0; i--) {
+                const note = gameState.notes[i];
+                if (note.time <= currentTime + 1500 && note.time >= currentTime - 200) {
+                    createNote(note.direction, note.track, note.time);
+                    gameState.notes.splice(i, 1);
+                }
+            }
+        }
+        
+        // 创建音符
+        function createNote(direction, track, time) {
+            const arrowContainer = document.querySelector('.arrow-track:nth-child(' + (track+1) + ')');
+            const arrow = document.createElement('div');
+            const directions = ['up', 'down', 'left', 'right'];
+            
+            arrow.className = `arrow ${directions[direction]}`;
+            arrow.style.left = '100%';
+            arrow.dataset.time = time;
+            arrow.dataset.hit = 'false';
+            
+            arrowContainer.appendChild(arrow);
+            
+            // 保存到活动音符列表
+            gameState.activeNotes.push({
+                element: arrow,
+                direction: direction,
+                track: track,
+                time: time,
+                hit: false
+            });
+        }
+        
+        // 更新音符位置
+        function updateNotes() {
+            const containerWidth = document.querySelector('.arrow-track').offsetWidth;
+            const judgeLine = 60; // 判定线位置（从左侧开始）
+            
+            for (let i = gameState.activeNotes.length - 1; i >= 0; i--) {
+                const note = gameState.activeNotes[i];
+                const noteElement = note.element;
+                const noteRect = noteElement.getBoundingClientRect();
+                const containerRect = noteElement.parentElement.getBoundingClientRect();
+                
+                // 计算音符位置（从右侧开始向左移动）
+                const progress = (gameState.songProgress - note.time) / 1000;
+                const position = containerWidth - (progress * gameState.noteSpeed * 100);
+                
+                // 更新音符位置
+                noteElement.style.left = `${position}px`;
+                
+                // 移除已经离开屏幕的音符
+                if (position < -100) {
+                    if (!note.hit) {
+                        // 未击中的音符
+                        noteElement.classList.add('miss');
+                        showJudgment('miss', noteElement);
+                        updateHealth(-8);
+                        gameState.combo = 0;
+                        comboDisplay.textContent = `连击: ${gameState.combo}`;
+                        comboDisplay.className = '';
+                        gameState.judgment.miss++;
+                    }
+                    
+                    noteElement.remove();
+                    gameState.activeNotes.splice(i, 1);
+                }
+            }
+        }
+        
+        // 检查未按下的音符
+        function checkMissedNotes() {
+            const judgeLine = 60; // 判定线位置
+            
+            for (let i = gameState.activeNotes.length - 1; i >= 0; i--) {
+                const note = gameState.activeNotes[i];
+                const noteElement = note.element;
+                
+                if (!note.hit) {
+                    const notePosition = parseInt(noteElement.style.left) || 0;
+                    
+                    // 如果音符已经通过判定线但未被按下
+                    if (notePosition < judgeLine - 30) {
+                        noteElement.classList.add('miss');
+                        showJudgment('miss', noteElement);
+                        updateHealth(-8);
+                        gameState.combo = 0;
+                        comboDisplay.textContent = `连击: ${gameState.combo}`;
+                        comboDisplay.className = '';
+                        gameState.judgment.miss++;
+                        
+                        note.hit = true;
+                        noteElement.remove();
+                        gameState.activeNotes.splice(i, 1);
+                    }
+                }
+            }
+        }
+        
+        // 显示判定结果
+        function showJudgment(type, noteElement) {
+            // 更新判定统计
+            if (type !== 'miss') {
+                gameState.judgment[type]++;
+            }
+            
+            // 显示判定文本
+            judgmentDisplay.textContent = type.toUpperCase();
+            judgmentDisplay.className = type;
+            
+            // 创建脉冲效果
+            const pulse = document.createElement('div');
+            pulse.className = 'pulse';
+            pulse.style.position = 'absolute';
+            pulse.style.left = `${noteElement.offsetLeft + noteElement.offsetWidth/2}px`;
+            pulse.style.top = `${noteElement.offsetTop + noteElement.offsetHeight/2}px`;
+            pulse.style.width = '20px';
+            pulse.style.height = '20px';
+            pulse.style.borderRadius = '50%';
+            pulse.style.backgroundColor = type === 'sick' ? '#ffd700' : 
+                                          type === 'good' ? '#4ade80' : 
+                                          type === 'bad' ? '#ff9e6d' : '#ff5252';
+            gameContainer.appendChild(pulse);
+            
+            // 移除脉冲元素
+            setTimeout(() => {
+                if (pulse.parentNode) {
+                    pulse.parentNode.removeChild(pulse);
+                }
+            }, 1000);
+            
+            // 角色动画
+            if (type !== 'miss') {
+                player.classList.add('player-hit');
+                opponent.classList.add('opponent-hit');
+                
+                setTimeout(() => {
+                    player.classList.remove('player-hit');
+                    opponent.classList.remove('opponent-hit');
+                }, 200);
+            }
+        }
+        
+        // 更新生命值
+        function updateHealth(amount) {
+            gameState.health = Math.max(0, Math.min(100, gameState.health + amount));
+            healthBar.style.width = `${gameState.health}%`;
+            
+            // 生命值动画
+            if (amount < 0) {
+                healthBar.style.animation = 'none';
+                setTimeout(() => {
+                    healthBar.style.animation = 'health-shine 2s infinite';
+                }, 10);
+            }
+        }
+        
+        // 更新分数
+        function updateScore(judgmentType) {
+            let points = 0;
+            
+            switch(judgmentType) {
+                case 'sick':
+                    points = 300 + gameState.combo * 5;
+                    break;
+                case 'good':
+                    points = 150 + gameState.combo * 3;
+                    break;
+                case 'bad':
+                    points = 50 + gameState.combo;
+                    break;
+            }
+            
+            gameState.score += points;
+            scoreDisplay.textContent = gameState.score;
+            
+            // 更新连击
+            if (judgmentType !== 'miss' && judgmentType !== 'bad') {
+                gameState.combo++;
+                gameState.maxCombo = Math.max(gameState.maxCombo, gameState.combo);
+                
+                comboDisplay.textContent = `连击: ${gameState.combo}`;
+                comboDisplay.className = 'active';
+            } else {
+                gameState.combo = 0;
+                comboDisplay.textContent = `连击: ${gameState.combo}`;
+                comboDisplay.className = '';
+            }
+        }
+        
+        // 按键处理
+        function handleKeyPress(key) {
+            if (!gameState.playing) return;
+            
+            let direction = -1;
+            let track = -1;
+            
+            // 确定按下的方向
+            switch(key) {
+                case 'ArrowUp': // 上
+                case 'KeyW':
+                    direction = 0;
+                    track = 0;
+                    break;
+                case 'ArrowDown': // 下
+                case 'KeyS':
+                    direction = 1;
+                    track = 1;
+                    break;
+                case 'ArrowLeft': // 左
+                case 'KeyA':
+                    direction = 2;
+                    track = 2;
+                    break;
+                case 'ArrowRight': // 右
+                case 'KeyD':
+                    direction = 3;
+                    track = 3;
+                    break;
+                default:
+                    return;
+            }
+            
+            // 查找最近的未命中音符
+            const judgeLine = 60; // 判定线位置
+            const judgeWindow = { sick: 20, good: 40, bad: 60 }; // 判定窗口（像素）
+            
+            let closestNote = null;
+            let closestDistance = Infinity;
+            
+            for (const note of gameState.activeNotes) {
+                if (!note.hit && note.direction === direction && note.track === track) {
+                    const notePosition = parseInt(note.element.style.left) || 0;
+                    const distance = Math.abs(notePosition - judgeLine);
+                    
+                    if (distance < closestDistance && distance < judgeWindow.bad) {
+                        closestDistance = distance;
+                        closestNote = note;
+                    }
+                }
+            }
+            
+            // 处理命中
+            if (closestNote) {
+                closestNote.hit = true;
+                closestNote.element.classList.add('hit');
+                
+                // 确定判定类型
+                let judgmentType = 'bad';
+                if (closestDistance < judgeWindow.sick) {
+                    judgmentType = 'sick';
+                    updateHealth(3);
+                } else if (closestDistance < judgeWindow.good) {
+                    judgmentType = 'good';
+                    updateHealth(1);
+                } else {
+                    updateHealth(-2);
+                }
+                
+                // 显示判定并更新分数
+                showJudgment(judgmentType, closestNote.element);
+                updateScore(judgmentType);
+                
+                // 移除音符
+                setTimeout(() => {
+                    if (closestNote.element.parentNode) {
+                        closestNote.element.parentNode.removeChild(closestNote.element);
+                    }
+                }, 300);
+            } else {
+                // 误按 - 没有音符时按下
+                showJudgment('miss', document.querySelector('.arrow-track:nth-child(' + (track+1) + ')'));
+                updateHealth(-5);
+                gameState.combo = 0;
+                comboDisplay.textContent = `连击: ${gameState.combo}`;
+                comboDisplay.className = '';
+                gameState.judgment.miss++;
+            }
+        }
+        
+        // 模拟音乐节奏（实际游戏应使用音频分析）
+        function simulateMusic() {
+            if (!gameState.playing) return;
+            
+            const now = Date.now();
+            const timeSinceLastBeat = now - gameState.lastBeat;
+            
+            if (timeSinceLastBeat >= gameState.beatInterval) {
+                // 触发节拍
+                gameState.currentBeat = (gameState.currentBeat + 1) % 4;
+                beatLights.forEach((light, index) => {
+                    if (index === gameState.currentBeat) {
+                        light.classList.add('active');
+                        setTimeout(() => light.classList.remove('active'), 300);
+                    }
+                });
+                
+                gameState.lastBeat = now;
+            }
+            
+            setTimeout(simulateMusic, 50);
+        }
+        
+        // 结束游戏
+        function endGame() {
+            gameState.playing = false;
+            
+            // 显示游戏结束屏幕
+            finalScoreDisplay.textContent = `最终分数: ${gameState.score}\n最大连击: ${gameState.maxCombo}\nSICK: ${gameState.judgment.sick} | GOOD: ${gameState.judgment.good} | BAD: ${gameState.judgment.bad} | MISS: ${gameState.judgment.miss}`;
+            gameOverScreen.style.display = 'flex';
+        }
+        
+        // 事件监听
+        startButton.addEventListener('click', initGame);
+        restartButton.addEventListener('click', initGame);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
+                e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+                e.key === 'w' || e.key === 's' || 
+                e.key === 'a' || e.key === 'd' ||
+                e.key === 'W' || e.key === 'S' || 
+                e.key === 'A' || e.key === 'D') {
+                e.preventDefault();
+                handleKeyPress(e.key);
+            }
+        });
+        
+        // 移动端触摸支持（简化版）
+        arrowTracks.forEach((track, index) => {
+            track.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const directions = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+                handleKeyPress(directions[index]);
+            });
+        });
+        
+        // 初始设置
+        healthBar.style.width = `${gameState.health}%`;
+    </script>
+</body>
+</html>
