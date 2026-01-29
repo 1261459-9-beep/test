@@ -90,8 +90,8 @@
         }
         
         .flipper {
-            width: 60px;
-            height: 20px;
+            width: 80px;
+            height: 25px;
             background: #ff6600;
             border-radius: 10px;
             transform-origin: center bottom;
@@ -231,17 +231,6 @@
         .restart-btn:hover {
             background: #ff9900;
         }
-    /* ... 其他不變 ... */
-
-    .flipper {
-        width: 80px;      /* 👈 從 60px 加大 */
-        height: 25px;     /* 👈 從 20px 加高 */
-        background: #ff6600;
-        border-radius: 10px;
-        transform-origin: center bottom;
-        transition: transform 0.1s ease;
-        cursor: pointer;
-    }
     </style>
 </head>
 <body>
@@ -352,12 +341,12 @@
     
         function createObstacles() {
             const bumperPositions = [
-                { x: 100, y: 100 },
-                { x: 200, y: 100 },
-                { x: 300, y: 100 },
-                { x: 150, y: 250 },
-                { x: 250, y: 250 },
-                { x: 200, y: 400 }
+                { x: 100, y: 150 },
+                { x: 200, y: 150 },
+                { x: 300, y: 150 },
+                { x: 150, y: 300 },
+                { x: 250, y: 300 },
+                { x: 200, y: 450 }
             ];
             bumperPositions.forEach(pos => {
                 const b = document.createElement('div');
@@ -370,13 +359,17 @@
                 bumpers.push({ el: b, x: pos.x, y: pos.y, radius: 17.5, points: 10 });
             });
     
-            // 🔺 關鍵修改：50分方塊移到 y=280（更上方！）
+            // 重新安排方塊位置：高分在上，低分在下
             const targetData = [
-                { x: 62, y: 62, points: 10 },
-                { x: 337, y: 62, points: 20 },
-                { x: 200, y: 212, points: 30 },
-                { x: 200, y: 280, points: 50 } // 👈 從 362 改為 280
+                { x: 200, y: 80, points: 50 },   // 頂部中間 - 50分（最高分）
+                { x: 100, y: 120, points: 30 },  // 左上 - 30分
+                { x: 300, y: 120, points: 30 },  // 右上 - 30分
+                { x: 200, y: 200, points: 20 },  // 中間上 - 20分
+                { x: 150, y: 280, points: 10 },  // 左中 - 10分
+                { x: 250, y: 280, points: 10 },  // 右中 - 10分
+                { x: 200, y: 360, points: 5 }    // 底部 - 5分（最低分）
             ];
+            
             targetData.forEach(t => {
                 const el = document.createElement('div');
                 el.className = 'target';
@@ -386,16 +379,18 @@
                 el.style.left = (t.x - 15) + 'px';
                 el.style.top = (t.y - 15) + 'px';
                 el.style.fontSize = '14px';
+                el.style.background = getTargetColor(t.points); // 根據分數設置顏色
                 playArea.appendChild(el);
                 targets.push({ el, x: t.x, y: t.y, radius: 15, points: t.points });
             });
     
+            // 調整彈簧位置避免與新方塊重疊
             const ramp1 = document.createElement('div');
             ramp1.className = 'ramp';
             ramp1.style.width = '100px';
             ramp1.style.height = '30px';
             ramp1.style.left = '50px';
-            ramp1.style.top = '150px';
+            ramp1.style.top = '200px';
             ramp1.style.transform = 'rotate(-20deg)';
             playArea.appendChild(ramp1);
             ramps.push(ramp1);
@@ -405,10 +400,22 @@
             ramp2.style.width = '100px';
             ramp2.style.height = '30px';
             ramp2.style.right = '50px';
-            ramp2.style.top = '150px';
+            ramp2.style.top = '200px';
             ramp2.style.transform = 'rotate(20deg)';
             playArea.appendChild(ramp2);
             ramps.push(ramp2);
+        }
+        
+        // 根據分數返回對應的方塊顏色
+        function getTargetColor(points) {
+            switch(points) {
+                case 50: return 'linear-gradient(45deg, #ff00ff, #ff00cc)'; // 紫色
+                case 30: return 'linear-gradient(45deg, #ffcc00, #ff9900)'; // 橙色
+                case 20: return 'linear-gradient(45deg, #00ccff, #0099ff)'; // 藍色
+                case 10: return 'linear-gradient(45deg, #00ff00, #00cc00)'; // 綠色
+                case 5: return 'linear-gradient(45deg, #cccccc, #999999)';  // 灰色
+                default: return 'linear-gradient(45deg, #00ff00, #00cc00)';
+            }
         }
     
         function createBall() {
@@ -454,10 +461,22 @@
             if (!gameActive || isBallLaunched || isLaunching) return;
             isLaunching = true;
             isBallLaunched = true;
+            
+            // 完全隨機的發射方向（360度隨機角度）
+            const angle = Math.random() * Math.PI * 2; // 0 到 2π 之間的隨機角度
+            const speed = 15 + Math.random() * 5; // 速度在15-20之間
+            
+            // 計算x和y方向的速度分量
             ballVel = {
-                x: (Math.random() - 0.5) * 7,
-                y: -18
+                x: Math.cos(angle) * speed,
+                y: Math.sin(angle) * speed
             };
+            
+            // 確保球向上發射（如果隨機角度向下，則反轉y方向）
+            if (ballVel.y > 0) {
+                ballVel.y = -ballVel.y;
+            }
+            
             setTimeout(() => isLaunching = false, 300);
         }
     
@@ -551,7 +570,7 @@
             }
         }
     
-        // 🔥 關鍵修改：強化擋板反彈！
+        // 增強擋板反彈力道
         function checkFlipperCollisions() {
             if (!isBallLaunched) return;
     
@@ -567,16 +586,16 @@
     
                 // 左擋板碰撞區
                 if (Math.abs(ballCenterX - leftFlipperX) < 60 && ballCenterY > flipperY - 20) {
-                    // 💥 強力反彈：固定向上速度 + 更大水平推力
-                    ballVel.y = -16;   // 👈 強制向上（比原本更快）
-                    ballVel.x -= 5;    // 👈 從 3.5 → 5
-                    addScore(2);
+                    // 💥 大幅增強反彈力道
+                    ballVel.y = -22;   // 向上速度增加
+                    ballVel.x -= 8;    // 水平推力增加
+                    addScore(5);       // 增加反彈得分
                 }
                 // 右擋板碰撞區
                 else if (Math.abs(ballCenterX - rightFlipperX) < 60 && ballCenterY > flipperY - 20) {
-                    ballVel.y = -16;
-                    ballVel.x += 5;
-                    addScore(2);
+                    ballVel.y = -22;
+                    ballVel.x += 8;
+                    addScore(5);
                 }
             }
         }
