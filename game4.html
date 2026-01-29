@@ -9,75 +9,257 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
         }
         
         body {
-            background: #121212;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            overflow: hidden;
         }
         
         .game-container {
             position: relative;
-            width: 400px;
-            height: 600px;
+            width: 900px;
+            height: 650px;
             background: linear-gradient(135deg, #1a2a6c, #b21f1f);
-            border-radius: 15px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-            border: 3px solid gold;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.7);
+            border: 4px solid #ffcc00;
+            display: flex;
+            flex-direction: row;
         }
         
-        .pinball-table {
-            position: relative;
+        /* 開始頁面 */
+        .start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background: #000;
+            background: radial-gradient(circle, #0d0d2b, #000);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+            transition: opacity 0.5s;
+        }
+        
+        .start-title {
+            font-size: 3.5rem;
+            color: #ffcc00;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.8);
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: 3px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { text-shadow: 0 0 10px rgba(255, 204, 0, 0.8); }
+            50% { text-shadow: 0 0 25px rgba(255, 204, 0, 1); }
+            100% { text-shadow: 0 0 10px rgba(255, 204, 0, 0.8); }
+        }
+        
+        .start-description {
+            color: #aaa;
+            font-size: 1.2rem;
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        .start-button {
+            background: linear-gradient(to bottom, #ff6600, #cc5200);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 102, 0, 0.6);
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .start-button:hover {
+            background: linear-gradient(to bottom, #ff9900, #e66600);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 153, 0, 0.8);
+        }
+        
+        .start-button:active {
+            transform: translateY(1px);
+        }
+        
+        /* 左側面板 */
+        .left-panel {
+            width: 200px;
+            background: rgba(0, 0, 20, 0.7);
+            border-right: 2px solid #ffcc00;
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .panel-title {
+            color: #ffcc00;
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.7);
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            border-radius: 50%;
+            border: 3px solid #ffcc00;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+            position: relative;
             overflow: hidden;
         }
         
-        .score-board {
+        .score-circle::before {
+            content: '';
             position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            color: gold;
-            font-weight: bold;
-            z-index: 10;
-        }
-        
-        .score-item {
-            text-align: center;
-        }
-        
-        .score-label {
-            font-size: 0.8rem;
-            opacity: 0.8;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 60%, rgba(255, 204, 0, 0.1) 100%);
+            border-radius: 50%;
         }
         
         .score-value {
+            font-size: 3.2rem;
+            color: #ffcc00;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+            letter-spacing: 1px;
+        }
+        
+        .score-label {
+            font-size: 1rem;
+            color: #aaa;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+        
+        .balls-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .balls-title {
+            color: #ffcc00;
             font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.7);
+        }
+        
+        .balls-count {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        .ball-icon {
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle, #fff, #ccc);
+            border-radius: 50%;
+            border: 2px solid #ffcc00;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            position: relative;
+        }
+        
+        .ball-icon.active {
+            background: radial-gradient(circle, #ffcc00, #ff9900);
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.9);
+            transform: scale(1.1);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        /* 中間遊戲區域 */
+        .game-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .score-board {
+            position: relative;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.6);
+            border-bottom: 2px solid #ffcc00;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            align-items: center;
+        }
+        
+        .level-container {
+            background: linear-gradient(135deg, #0066ff, #0033cc);
+            border-radius: 30px;
+            padding: 8px 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .level-icon {
+            width: 25px;
+            height: 25px;
+            background: #ffcc00;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .level-value {
+            color: #ffcc00;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.7);
         }
         
         .play-area {
-            position: absolute;
-            top: 60px;
-            left: 10px;
-            right: 10px;
-            bottom: 80px;
+            position: relative;
+            flex: 1;
             background: #000;
-            border-radius: 10px;
+            border-radius: 0 0 10px 10px;
             overflow: hidden;
             perspective: 1000px;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
         }
         
         .flippers {
@@ -97,6 +279,7 @@
             transform-origin: center bottom;
             transition: transform 0.1s ease;
             cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
         }
         
         .flipper.left {
@@ -109,16 +292,18 @@
         
         .flipper.active {
             background: #ffcc00;
+            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.8);
         }
         
         .ball {
             position: absolute;
             width: 15px;
             height: 15px;
-            background: white;
+            background: radial-gradient(circle, #fff, #ccc);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
             z-index: 5;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
         
         .bumper {
@@ -127,28 +312,31 @@
             height: 30px;
             background: radial-gradient(circle, #ff6600, #ff0000);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255, 102, 0, 0.8);
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
         
         .target {
             position: absolute;
             width: 25px;
             height: 25px;
-            background: linear-gradient(45deg, #00ff00, #00cc00);
             border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 255, 0, 0.8);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
             display: flex;
             justify-content: center;
             align-items: center;
             font-weight: bold;
             color: black;
-            font-size: 12px;
+            font-size: 14px;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.3);
         }
         
         .ramp {
             position: absolute;
             background: linear-gradient(to bottom, #ffcc00, #ff9900);
             border-radius: 10px 10px 0 0;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
         }
         
         .launch-button {
@@ -156,36 +344,24 @@
             bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
-            height: 30px;
-            background: #ff6600;
-            border-radius: 15px;
+            width: 100px;
+            height: 40px;
+            background: linear-gradient(to bottom, #ff6600, #cc5200);
+            border-radius: 50px;
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+            box-shadow: 0 5px 15px rgba(255, 102, 0, 0.6);
+            transition: all 0.2s;
+            z-index: 10;
         }
         
         .launch-button:hover {
-            background: #ff9900;
-        }
-        
-        .message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px 30px;
-            border-radius: 15px;
-            color: gold;
-            font-size: 1.2rem;
-            text-align: center;
-            z-index: 20;
-            display: block;
+            background: linear-gradient(to bottom, #ff9900, #e66600);
+            transform: translateX(-50%) scale(1.05);
         }
         
         .controls {
@@ -195,9 +371,79 @@
             right: 10px;
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             color: #ccc;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+        
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 25px 40px;
+            border-radius: 20px;
+            color: #ffcc00;
+            font-size: 1.5rem;
+            text-align: center;
+            z-index: 20;
+            display: block;
+            box-shadow: 0 0 30px rgba(255, 204, 0, 0.5);
+        }
+        
+        /* 右側面板 */
+        .right-panel {
+            width: 250px;
+            background: rgba(0, 0, 20, 0.7);
+            border-left: 2px solid #ffcc00;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .rules-title {
+            color: #ffcc00;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.7);
+        }
+        
+        .rules-container {
+            background: rgba(0, 0, 30, 0.6);
+            border-radius: 15px;
+            padding: 20px;
+            flex: 1;
+            border: 1px solid #333;
+        }
+        
+        .rules-list {
+            list-style: none;
+            color: #ccc;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .rules-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+        }
+        
+        .rules-list li:before {
+            content: "•";
+            color: #ffcc00;
+            font-size: 1.8rem;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        .rules-list li:last-child {
+            border-bottom: none;
         }
         
         .game-over {
@@ -206,70 +452,167 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: gold;
-            font-size: 2rem;
+            color: #ffcc00;
+            font-size: 2.5rem;
             font-weight: bold;
             z-index: 30;
             display: none;
+            text-align: center;
+        }
+        
+        .final-score {
+            font-size: 3.5rem;
+            margin: 20px 0;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
         }
         
         .restart-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #ff6600;
-            border-radius: 10px;
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: linear-gradient(to bottom, #ff6600, #cc5200);
+            border-radius: 50px;
             color: white;
             cursor: pointer;
+            font-size: 1.3rem;
             font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255, 102, 0, 0.6);
+            transition: all 0.3s;
+            text-transform: uppercase;
         }
         
         .restart-btn:hover {
-            background: #ff9900;
+            background: linear-gradient(to bottom, #ff9900, #e66600);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 153, 0, 0.8);
+        }
+        
+        /* 動畫效果 */
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ffcc00;
+            pointer-events: none;
+            animation: particle-fade 1s forwards;
+        }
+        
+        @keyframes particle-fade {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(2); }
+        }
+        
+        .score-popup {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffcc00;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            z-index: 100;
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.8);
+            animation: popup 1s forwards;
+        }
+        
+        @keyframes popup {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-50px) scale(1.3); opacity: 0; }
+        }
+        
+        /* 隱藏遊戲主介面 */
+        .game-main {
+            display: none;
+        }
+        
+        .game-main.active {
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <div class="pinball-table">
-            <div class="score-board">
-                <div class="score-item">
-                    <div class="score-label">分數</div>
+        <!-- 開始頁面 -->
+        <div class="start-screen">
+            <h1 class="start-title">彈珠波子機</h1>
+            <p class="start-description">
+                在這個經典彈珠遊戲中，你需要控制擋板擊打彈珠，擊中不同分數的目標獲取高分！
+                高分目標位於頂部，低分目標在底部。使用左右鍵控制擋板，空格鍵發射彈珠。
+                挑戰你的反應速度和策略，看看你能獲得多少分！
+            </p>
+            <button class="start-button" id="startButton">開始遊戲</button>
+        </div>
+        
+        <!-- 遊戲主介面 -->
+        <div class="game-main" id="gameMain">
+            <!-- 左側面板 -->
+            <div class="left-panel">
+                <h2 class="panel-title">遊戲狀態</h2>
+                <div class="score-circle">
                     <div class="score-value" id="score">0</div>
+                    <div class="score-label">分數</div>
                 </div>
-                <div class="score-item">
-                    <div class="score-label">球數</div>
-                    <div class="score-value" id="balls">3</div>
-                </div>
-                <div class="score-item">
-                    <div class="score-label">等級</div>
-                    <div class="score-value" id="level">1</div>
+                
+                <div class="balls-container">
+                    <h3 class="balls-title">剩餘次數</h3>
+                    <div class="balls-count">
+                        <div class="ball-icon active"></div>
+                        <div class="ball-icon active"></div>
+                        <div class="ball-icon active"></div>
+                    </div>
                 </div>
             </div>
             
-            <div class="play-area" id="playArea"></div>
-            
-            <div class="flippers">
-                <div class="flipper left" id="leftFlipper"></div>
-                <div class="flipper right" id="rightFlipper"></div>
+            <!-- 中間遊戲區域 -->
+            <div class="game-area">
+                <div class="score-board">
+                    <div class="level-container">
+                        <div class="level-icon">L</div>
+                        <div class="level-value" id="level">1</div>
+                    </div>
+                </div>
+                
+                <div class="play-area" id="playArea"></div>
+                
+                <div class="flippers">
+                    <div class="flipper left" id="leftFlipper"></div>
+                    <div class="flipper right" id="rightFlipper"></div>
+                </div>
+                
+                <div class="launch-button" id="launchButton">發射</div>
+                
+                <div class="controls">
+                    <div>← → 控制擋板 | 空格鍵發射</div>
+                </div>
+                
+                <div class="message" id="message">點擊[開始遊戲]按鈕開始遊戲</div>
+                
+                <div class="game-over" id="gameOver">
+                    <div>遊戲結束！</div>
+                    <div class="final-score" id="finalScore">最終分數：0</div>
+                    <div class="restart-btn" id="restartBtn">重新開始</div>
+                </div>
             </div>
             
-            <div class="launch-button" id="launchButton">發射</div>
-            
-            <div class="controls">
-                <div>← → 控制擋板 | 空格鍵發射</div>
-            </div>
-            
-            <div class="message" id="message">按空格鍵或點擊發射按鈕開始！</div>
-            
-            <div class="game-over" id="gameOver">
-                <div>遊戲結束！</div>
-                <div id="finalScore">最終分數：0</div>
-                <div class="restart-btn" id="restartBtn">重新開始</div>
+            <!-- 右側面板 -->
+            <div class="right-panel">
+                <h2 class="rules-title">遊戲規則</h2>
+                <div class="rules-container">
+                    <ul class="rules-list">
+                        <li>使用左右方向鍵控制底部的擋板</li>
+                        <li>按空格鍵發射彈珠開始遊戲</li>
+                        <li>擊中目標獲得分數：50分(紫色) > 30分(橙色) > 20分(藍色) > 10分(綠色) > 5分(灰色)</li>
+                        <li>高分目標位於頂部，低分目標在底部</li>
+                        <li>每次擊中目標會產生炫麗特效</li>
+                        <li>球掉出底部則失去一次機會</li>
+                        <li>共有3次機會，全部用完遊戲結束</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -303,13 +646,27 @@
         const leftFlipper = document.getElementById('leftFlipper');
         const rightFlipper = document.getElementById('rightFlipper');
         const restartBtn = document.getElementById('restartBtn');
+        const startButton = document.getElementById('startButton');
+        const gameMain = document.getElementById('gameMain');
     
         let bumpers = [];
         let targets = [];
         let ramps = [];
         let animationId = null;
         let lastTime = 0;
+        let ballIcons = document.querySelectorAll('.ball-icon');
     
+        // ===== 開始頁面控制 =====
+        startButton.addEventListener('click', () => {
+            document.querySelector('.start-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.querySelector('.start-screen').style.display = 'none';
+                gameMain.classList.add('active');
+                initGame();
+            }, 500);
+        });
+    
+        // ===== 遊戲初始化 =====
         function initGame() {
             score = 0;
             ballsLeft = 3;
@@ -319,6 +676,7 @@
             ballVel = { x: 0, y: 0 };
     
             updateScore();
+            updateBalls();
             clearObstacles();
             createObstacles();
             createBall();
@@ -380,6 +738,7 @@
                 el.style.top = (t.y - 15) + 'px';
                 el.style.fontSize = '14px';
                 el.style.background = getTargetColor(t.points); // 根據分數設置顏色
+                el.style.boxShadow = `0 0 15px ${getTargetColor(t.points).replace('linear-gradient', 'rgba(255, 255, 255, 0.5)')}`;
                 playArea.appendChild(el);
                 targets.push({ el, x: t.x, y: t.y, radius: 15, points: t.points });
             });
@@ -555,6 +914,7 @@
                     ballVel.y = Math.sin(angle) * speed * BOUNCE;
     
                     addScore(b.points);
+                    createParticles(b.x, b.y, b.points);
                     break;
                 }
             }
@@ -565,6 +925,7 @@
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 if (distance < BALL_RADIUS + t.radius) {
                     addScore(t.points);
+                    createParticles(t.x, t.y, t.points);
                     break;
                 }
             }
@@ -590,12 +951,14 @@
                     ballVel.y = -22;   // 向上速度增加
                     ballVel.x -= 8;    // 水平推力增加
                     addScore(5);       // 增加反彈得分
+                    createParticles(ballCenterX, ballCenterY, 5);
                 }
                 // 右擋板碰撞區
                 else if (Math.abs(ballCenterX - rightFlipperX) < 60 && ballCenterY > flipperY - 20) {
                     ballVel.y = -22;
                     ballVel.x += 8;
                     addScore(5);
+                    createParticles(ballCenterX, ballCenterY, 5);
                 }
             }
         }
@@ -603,16 +966,28 @@
         function addScore(points) {
             score += points;
             updateScore();
+            createScorePopup(points);
         }
     
         function updateScore() {
             scoreEl.textContent = score;
-            ballsEl.textContent = ballsLeft;
             levelEl.textContent = currentLevel;
+        }
+    
+        function updateBalls() {
+            // 更新球數圖標
+            for (let i = 0; i < ballIcons.length; i++) {
+                if (i < ballsLeft) {
+                    ballIcons[i].classList.add('active');
+                } else {
+                    ballIcons[i].classList.remove('active');
+                }
+            }
         }
     
         function loseBall() {
             ballsLeft--;
+            updateBalls();
             updateScore();
             gameActive = false;
             isBallLaunched = false;
@@ -632,6 +1007,98 @@
         function restartGame() {
             gameOverEl.style.display = 'none';
             initGame();
+        }
+        
+        // 創建分數彈出效果
+        function createScorePopup(points) {
+            const popup = document.createElement('div');
+            popup.className = 'score-popup';
+            popup.textContent = `+${points}`;
+            popup.style.left = ballPos.x + 'px';
+            popup.style.top = ballPos.y + 'px';
+            
+            // 根據分數設置顏色
+            if (points >= 30) {
+                popup.style.color = '#ffcc00';
+                popup.style.textShadow = '0 0 5px rgba(255, 204, 0, 0.8)';
+            } else if (points >= 20) {
+                popup.style.color = '#00ccff';
+                popup.style.textShadow = '0 0 5px rgba(0, 204, 255, 0.8)';
+            } else if (points >= 10) {
+                popup.style.color = '#00ff00';
+                popup.style.textShadow = '0 0 5px rgba(0, 255, 0, 0.8)';
+            } else {
+                popup.style.color = '#cccccc';
+                popup.style.textShadow = '0 0 5px rgba(204, 204, 204, 0.8)';
+            }
+            
+            playArea.appendChild(popup);
+            
+            // 移除彈出效果
+            setTimeout(() => {
+                popup.remove();
+            }, 1000);
+        }
+        
+        // 創建粒子效果
+        function createParticles(x, y, points) {
+            const count = Math.min(points, 20);
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // 根據分數設置粒子顏色
+                if (points >= 30) {
+                    particle.style.backgroundColor = '#ffcc00';
+                } else if (points >= 20) {
+                    particle.style.backgroundColor = '#00ccff';
+                } else if (points >= 10) {
+                    particle.style.backgroundColor = '#00ff00';
+                } else {
+                    particle.style.backgroundColor = '#cccccc';
+                }
+                
+                // 設置初始位置
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                // 添加粒子
+                playArea.appendChild(particle);
+                
+                // 隨機方向和速度
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 1 + Math.random() * 2;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+                
+                // 動畫
+                let posX = x;
+                let posY = y;
+                let opacity = 1;
+                const duration = 1000;
+                const startTime = performance.now();
+                
+                function animateParticle() {
+                    const now = performance.now();
+                    const progress = (now - startTime) / duration;
+                    
+                    if (progress < 1) {
+                        posX += vx;
+                        posY += vy;
+                        opacity = 1 - progress;
+                        
+                        particle.style.left = posX + 'px';
+                        particle.style.top = posY + 'px';
+                        particle.style.opacity = opacity;
+                        
+                        requestAnimationFrame(animateParticle);
+                    } else {
+                        particle.remove();
+                    }
+                }
+                
+                requestAnimationFrame(animateParticle);
+            }
         }
     
         // 事件監聽
@@ -656,7 +1123,11 @@
         rightFlipper.addEventListener('click', () => activateFlipper(rightFlipper, false));
         restartBtn.addEventListener('click', restartGame);
     
-        window.addEventListener('load', initGame);
+        // 初始隱藏遊戲主介面
+        window.addEventListener('load', () => {
+            gameMain.classList.add('active');
+            gameMain.style.display = 'none';
+        });
     </script>
 </body>
 </html>
