@@ -3,749 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>彈珠波子機 - 優化版</title>
+    <title>彈珠波子機</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            background: #121212;
-            font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
-            overflow: hidden;
+            background: #121212;
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
-        
         .game-container {
-            position: relative;
-            width: 400px;
-            height: 600px;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-            border: 3px solid gold;
-        }
-        
-        .pinball-table {
-            position: relative;
-            width: 100%;
-            height: 100%;
+            width: 600px;
+            height: 700px;
             background: #000;
+            border: 4px solid #ffcc00;
+            border-radius: 10px;
+            position: relative;
             overflow: hidden;
         }
-        
-        .score-board {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            color: gold;
-            font-weight: bold;
-            z-index: 10;
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
-        }
-        
-        .score-item {
-            text-align: center;
-        }
-        
-        .score-label {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-        
-        .score-value {
-            font-size: 1.2rem;
-            text-shadow: 0 0 3px rgba(255, 215, 0, 0.8);
-        }
-        
-        .play-area {
-            position: absolute;
-            top: 60px;
-            left: 10px;
-            right: 10px;
-            bottom: 80px;
-            background: #000;
-            border-radius: 10px;
-            overflow: hidden;
-            perspective: 1000px;
-        }
-        
-        .flippers {
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-around;
-        }
-        
-        .flipper {
-            width: 80px;
-            height: 25px;
-            background: #ff6600;
-            border-radius: 10px;
-            transform-origin: center bottom;
-            transition: transform 0.1s ease;
-            cursor: pointer;
-            box-shadow: 0 0 5px rgba(255, 102, 0, 0.8);
-            z-index: 3;
-        }
-        
-        .flipper.left {
-            transform: rotate(-45deg);
-        }
-        
-        .flipper.right {
-            transform: rotate(45deg);
-        }
-        
-        .flipper.active {
-            background: #ffcc00;
-            box-shadow: 0 0 10px rgba(255, 204, 0, 0.9);
-        }
-        
-        .ball {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 
-                        0 0 20px rgba(255, 255, 255, 0.6);
-            z-index: 5;
-            transition: all 0.05s;
-        }
-        
-        .bumper {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background: radial-gradient(circle, #ff6600, #ff0000);
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255, 102, 0, 0.8);
-            z-index: 2;
-        }
-        
-        .target {
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            background: linear-gradient(45deg, #00ff00, #00cc00);
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 255, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            color: black;
-            font-size: 12px;
-            z-index: 2;
-            transition: all 0.2s;
-        }
-        
-        .ramp {
-            position: absolute;
-            background: linear-gradient(to bottom, #ffcc00, #ff9900);
-            border-radius: 10px 10px 0 0;
-            z-index: 1;
-        }
-        
-        .launch-button {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 30px;
-            background: #ff6600;
-            border-radius: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
-            z-index: 10;
-            transition: all 0.2s;
-        }
-        
-        .launch-button:hover {
-            background: #ff9900;
-            transform: translateX(-50%) scale(1.05);
-        }
-        
-        .message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px 30px;
-            border-radius: 15px;
-            color: gold;
-            font-size: 1.2rem;
-            text-align: center;
-            z-index: 20;
-            display: block;
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
-            font-weight: bold;
-        }
-        
-        .controls {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            right: 10px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            color: #ccc;
-            font-size: 0.8rem;
-            z-index: 10;
-        }
-        
-        .game-over {
+        .start-screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: #000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: gold;
-            font-size: 2rem;
-            font-weight: bold;
-            z-index: 30;
-            display: none;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+            color: #ffcc00;
+            z-index: 10;
         }
-        
-        .restart-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
+        .start-button {
+            background: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            margin-top: 30px;
+            cursor: pointer;
+        }
+        .play-area {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            right: 20px;
+            bottom: 100px;
+            background: #000;
+        }
+        .ball {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+        }
+        .flipper {
+            position: absolute;
+            bottom: 20px;
+            width: 70px;
+            height: 20px;
             background: #ff6600;
             border-radius: 10px;
+        }
+        .flipper.left { left: 80px; transform: rotate(-45deg); }
+        .flipper.right { right: 80px; transform: rotate(45deg); }
+        .launch-btn {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff6600;
             color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 30px;
             cursor: pointer;
+        }
+        .score-display {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            color: #ffcc00;
+            font-size: 1.5rem;
             font-weight: bold;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
-        }
-        
-        .restart-btn:hover {
-            background: #ff9900;
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(255, 102, 0, 0.8);
-        }
-        
-        .target-highlight {
-            animation: pulse 0.5s;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 5px rgba(0, 255, 0, 0.8); }
-            50% { transform: scale(1.1); box-shadow: 0 0 15px rgba(0, 255, 0, 0.9); }
-            100% { transform: scale(1); box-shadow: 0 0 5px rgba(0, 255, 0, 0.8); }
-        }
-        
-        .ball-animation {
-            animation: ballBounce 0.3s;
-        }
-        
-        @keyframes ballBounce {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <div class="pinball-table">
-            <div class="score-board">
-                <div class="score-item">
-                    <div class="score-label">分數</div>
-                    <div class="score-value" id="score">0</div>
-                </div>
-                <div class="score-item">
-                    <div class="score-label">球數</div>
-                    <div class="score-value" id="balls">3</div>
-                </div>
-                <div class="score-item">
-                    <div class="score-label">等級</div>
-                    <div class="score-value" id="level">1</div>
-                </div>
-            </div>
-            
-            <div class="play-area" id="playArea"></div>
-            
-            <div class="flippers">
-                <div class="flipper left" id="leftFlipper"></div>
-                <div class="flipper right" id="rightFlipper"></div>
-            </div>
-            
-            <div class="launch-button" id="launchButton">發射</div>
-            
-            <div class="controls">
-                <div>← → 控制擋板 | 空格鍵發射</div>
-            </div>
-            
-            <div class="message" id="message">按空格鍵或點擊發射按鈕開始！</div>
-            
-            <div class="game-over" id="gameOver">
-                <div>遊戲結束！</div>
-                <div id="finalScore">最終分數：0</div>
-                <div class="restart-btn" id="restartBtn">重新開始</div>
-            </div>
+        <div class="start-screen" id="startScreen">
+            <h1 style="font-size: 2.5rem; margin-bottom: 20px;">🎯 彈珠波子機</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 30px; text-align: center; max-width: 400px;">
+                點擊下方按鈕開始遊戲！<br>使用 ← → 鍵控制擋板，空格鍵發射彈珠
+            </p>
+            <button class="start-button" id="startButton">▶ 開始遊戲</button>
         </div>
+        
+        <div class="score-display">分數: <span id="score">0</span></div>
+        <div class="play-area" id="playArea"></div>
+        <div class="flipper left" id="leftFlipper"></div>
+        <div class="flipper right" id="rightFlipper"></div>
+        <button class="launch-btn" id="launchButton">發射</button>
     </div>
 
     <script>
-        // ===== 遊戲狀態 =====
-        let score = 0;
-        let ballsLeft = 3;
-        let currentLevel = 1;
-        let ball = null;
-        let gameActive = false;
-        let isBallLaunched = false;
-        let isLaunching = false;
-        let lastTime = 0;
-        let animationId = null;
-    
-        const GRAVITY = 0.4;
-        const FRICTION = 0.985;
-        const BOUNCE = 0.85;
-        const BALL_RADIUS = 10; // 直徑 20px
-    
-        let ballPos = { x: 0, y: 0 };
-        let ballVel = { x: 0, y: 0 };
-    
+        // DOM 元素
+        const startScreen = document.getElementById('startScreen');
+        const startButton = document.getElementById('startButton');
         const playArea = document.getElementById('playArea');
         const scoreEl = document.getElementById('score');
-        const ballsEl = document.getElementById('balls');
-        const levelEl = document.getElementById('level');
-        const messageEl = document.getElementById('message');
-        const gameOverEl = document.getElementById('gameOver');
-        const finalScoreEl = document.getElementById('finalScore');
         const launchButton = document.getElementById('launchButton');
-        const leftFlipper = document.getElementById('leftFlipper');
-        const rightFlipper = document.getElementById('rightFlipper');
-        const restartBtn = document.getElementById('restartBtn');
-    
-        let bumpers = [];
-        let targets = [];
-        let ramps = [];
-    
-        function initGame() {
-            score = 0;
-            ballsLeft = 3;
-            currentLevel = 1;
-            isBallLaunched = false;
-            gameActive = false;
-            ballVel = { x: 0, y: 0 };
-    
-            updateScore();
-            clearObstacles();
-            createObstacles();
-            createBall();
-            resetBallPosition();
-            showStartMessage();
-    
-            if (animationId) cancelAnimationFrame(animationId);
-            lastTime = performance.now();
-            animationId = requestAnimationFrame(gameLoop);
-        }
-    
-        function clearObstacles() {
-            bumpers.forEach(el => el.el.remove());
-            targets.forEach(el => el.el.remove());
-            ramps.forEach(el => el.remove());
-            bumpers = [];
-            targets = [];
-            ramps = [];
-        }
-    
-        function createObstacles() {
-            // 重新設計障礙物佈局
-            const bumperPositions = [
-                { x: 100, y: 150 },
-                { x: 200, y: 150 },
-                { x: 300, y: 150 },
-                { x: 150, y: 300 },
-                { x: 250, y: 300 },
-                { x: 200, y: 450 }
-            ];
-            bumperPositions.forEach(pos => {
-                const b = document.createElement('div');
-                b.className = 'bumper';
-                b.style.width = '35px';
-                b.style.height = '35px';
-                b.style.left = (pos.x - 17.5) + 'px';
-                b.style.top = (pos.y - 17.5) + 'px';
-                playArea.appendChild(b);
-                bumpers.push({ 
-                    el: b, 
-                    x: pos.x, 
-                    y: pos.y, 
-                    radius: 17.5, 
-                    points: 10,
-                    lastHit: 0
-                });
-            });
-    
-            // 重新安排方塊位置：高分在上，低分在下
-            const targetData = [
-                { x: 200, y: 80, points: 50 },   // 頂部中間 - 50分（最高分）
-                { x: 100, y: 120, points: 30 },  // 左上 - 30分
-                { x: 300, y: 120, points: 30 },  // 右上 - 30分
-                { x: 200, y: 200, points: 20 },  // 中間上 - 20分
-                { x: 150, y: 280, points: 10 },  // 左中 - 10分
-                { x: 250, y: 280, points: 10 },  // 右中 - 10分
-                { x: 200, y: 360, points: 5 }    // 底部 - 5分（最低分）
-            ];
-            
-            targetData.forEach(t => {
-                const el = document.createElement('div');
-                el.className = 'target';
-                el.textContent = t.points;
-                el.style.width = '30px';
-                el.style.height = '30px';
-                el.style.left = (t.x - 15) + 'px';
-                el.style.top = (t.y - 15) + 'px';
-                el.style.fontSize = '14px';
-                el.style.background = getTargetColor(t.points); // 根據分數設置顏色
-                playArea.appendChild(el);
-                targets.push({ 
-                    el, 
-                    x: t.x, 
-                    y: t.y, 
-                    radius: 15, 
-                    points: t.points,
-                    lastHit: 0
-                });
-            });
-    
-            // 調整彈簧位置避免與新方塊重疊
-            const ramp1 = document.createElement('div');
-            ramp1.className = 'ramp';
-            ramp1.style.width = '100px';
-            ramp1.style.height = '30px';
-            ramp1.style.left = '50px';
-            ramp1.style.top = '200px';
-            ramp1.style.transform = 'rotate(-20deg)';
-            playArea.appendChild(ramp1);
-            ramps.push(ramp1);
-    
-            const ramp2 = document.createElement('div');
-            ramp2.className = 'ramp';
-            ramp2.style.width = '100px';
-            ramp2.style.height = '30px';
-            ramp2.style.right = '50px';
-            ramp2.style.top = '200px';
-            ramp2.style.transform = 'rotate(20deg)';
-            playArea.appendChild(ramp2);
-            ramps.push(ramp2);
-        }
         
-        // 根據分數返回對應的方塊顏色
-        function getTargetColor(points) {
-            switch(points) {
-                case 50: return 'linear-gradient(45deg, #ff00ff, #ff00cc)'; // 紫色
-                case 30: return 'linear-gradient(45deg, #ffcc00, #ff9900)'; // 橙色
-                case 20: return 'linear-gradient(45deg, #00ccff, #0099ff)'; // 藍色
-                case 10: return 'linear-gradient(45deg, #00ff00, #00cc00)'; // 綠色
-                case 5: return 'linear-gradient(45deg, #cccccc, #999999)';  // 灰色
-                default: return 'linear-gradient(45deg, #00ff00, #00cc00)';
-            }
-        }
-    
+        // 遊戲狀態
+        let score = 0;
+        let ball = null;
+        let ballPos = { x: 290, y: 550 };
+        let ballVel = { x: 0, y: 0 };
+        let gameActive = false;
+        let isLaunched = false;
+        let animationId = null;
+        
+        // 開始遊戲
+        startButton.addEventListener('click', () => {
+            startScreen.style.display = 'none';
+            gameActive = true;
+            createBall();
+            gameLoop();
+        });
+        
+        // 創建球
         function createBall() {
-            if (ball) ball.remove();
             ball = document.createElement('div');
             ball.className = 'ball';
-            ball.style.width = '20px';
-            ball.style.height = '20px';
+            ball.style.left = ballPos.x + 'px';
+            ball.style.top = ballPos.y + 'px';
             playArea.appendChild(ball);
         }
-    
-        function resetBallPosition() {
-            const width = playArea.offsetWidth;
-            const height = playArea.offsetHeight;
-            ballPos = {
-                x: width / 2 - BALL_RADIUS,
-                y: height - 70
+        
+        // 發射球
+        launchButton.addEventListener('click', launchBall);
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && gameActive && !isLaunched) {
+                launchBall();
+            }
+        });
+        
+        function launchBall() {
+            if (isLaunched) return;
+            isLaunched = true;
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 15;
+            ballVel = {
+                x: Math.cos(angle) * speed,
+                y: Math.sin(angle) * speed * -1
             };
-            updateBallElement();
         }
-    
-        function updateBallElement() {
+        
+        // 遊戲循環
+        function gameLoop() {
+            if (!gameActive) return;
+            
+            // 物理效果
+            if (isLaunched) {
+                ballVel.y += 0.3; // 重力
+                ballPos.x += ballVel.x;
+                ballPos.y += ballVel.y;
+                
+                // 邊界碰撞
+                const width = playArea.offsetWidth;
+                const height = playArea.offsetHeight;
+                
+                if (ballPos.x <= 0 || ballPos.x >= width - 20) {
+                    ballVel.x *= -0.8;
+                    ballPos.x = ballPos.x <= 0 ? 0 : width - 20;
+                }
+                
+                if (ballPos.y <= 0) {
+                    ballVel.y *= -0.8;
+                    ballPos.y = 0;
+                }
+                
+                // 擋板碰撞
+                if (ballPos.y >= height - 40 && ballPos.y <= height - 20) {
+                    if ((ballPos.x > 60 && ballPos.x < 150) || (ballPos.x > width - 150 && ballPos.x < width - 60)) {
+                        ballVel.y *= -0.9;
+                        score += 5;
+                        scoreEl.textContent = score;
+                    }
+                }
+                
+                // 掉出底部
+                if (ballPos.y > height) {
+                    resetGame();
+                    return;
+                }
+            }
+            
+            // 更新球位置
             if (ball) {
                 ball.style.left = ballPos.x + 'px';
                 ball.style.top = ballPos.y + 'px';
             }
-        }
-    
-        function showStartMessage() {
-            messageEl.style.display = 'block';
-            messageEl.textContent = ballsLeft <= 0 ? '遊戲結束！點擊重新開始' : '按空格鍵或點擊發射按鈕開始！';
-        }
-    
-        function startNewBall() {
-            if (ballsLeft <= 0 || gameActive) return;
-            gameActive = true;
-            isBallLaunched = false;
-            messageEl.style.display = 'none';
-            resetBallPosition();
-        }
-    
-        function launchBall() {
-            if (!gameActive || isBallLaunched || isLaunching) return;
-            isLaunching = true;
-            isBallLaunched = true;
             
-            // 完全隨機的發射方向（360度隨機角度）
-            const angle = Math.random() * Math.PI * 2; // 0 到 2π 之間的隨機角度
-            const speed = 15 + Math.random() * 5; // 速度在15-20之間
-            
-            // 計算x和y方向的速度分量
-            ballVel = {
-                x: Math.cos(angle) * speed,
-                y: Math.sin(angle) * speed
-            };
-            
-            // 確保球向上發射（如果隨機角度向下，則反轉y方向）
-            if (ballVel.y > 0) {
-                ballVel.y = -ballVel.y;
-            }
-            
-            setTimeout(() => isLaunching = false, 300);
-        }
-    
-        function activateFlipper(flipper, isLeft) {
-            if (!gameActive) return;
-            flipper.classList.add('active');
-            flipper.style.transform = isLeft ? 'rotate(-20deg)' : 'rotate(20deg)';
-            setTimeout(() => {
-                flipper.classList.remove('active');
-                flipper.style.transform = isLeft ? 'rotate(-45deg)' : 'rotate(45deg)';
-            }, 150);
-        }
-    
-        function gameLoop(timestamp) {
-            const deltaTime = Math.min(timestamp - lastTime, 16);
-            lastTime = timestamp;
-    
-            if (gameActive && isBallLaunched) {
-                ballVel.y += GRAVITY;
-                ballVel.x *= FRICTION;
-                ballVel.y *= FRICTION;
-    
-                ballPos.x += ballVel.x;
-                ballPos.y += ballVel.y;
-    
-                handleBoundaryCollisions();
-                checkObstacleCollisions();
-                checkFlipperCollisions();
-                updateBallElement();
-    
-                if (ballPos.y > playArea.offsetHeight - 20) {
-                    loseBall();
-                }
-            } else if (gameActive && !isBallLaunched) {
-                resetBallPosition();
-            }
-    
             animationId = requestAnimationFrame(gameLoop);
         }
-    
-        function handleBoundaryCollisions() {
-            const width = playArea.offsetWidth;
-            const height = playArea.offsetHeight;
-    
-            if (ballPos.x < 0) {
-                ballPos.x = 0;
-                ballVel.x = -ballVel.x * BOUNCE;
-            } else if (ballPos.x > width - 20) {
-                ballPos.x = width - 20;
-                ballVel.x = -ballVel.x * BOUNCE;
-            }
-    
-            if (ballPos.y < 0) {
-                ballPos.y = 0;
-                ballVel.y = -ballVel.y * BOUNCE;
-            }
+        
+        function resetGame() {
+            if (ball) ball.remove();
+            ballPos = { x: 290, y: 550 };
+            ballVel = { x: 0, y: 0 };
+            isLaunched = false;
+            createBall();
         }
-    
-        function checkObstacleCollisions() {
-            const ballCenterX = ballPos.x + BALL_RADIUS;
-            const ballCenterY = ballPos.y + BALL_RADIUS;
-    
-            for (const b of bumpers) {
-                const dx = ballCenterX - b.x;
-                const dy = ballCenterY - b.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < BALL_RADIUS + b.radius) {
-                    const angle = Math.atan2(dy, dx);
-                    const targetX = b.x + Math.cos(angle) * (BALL_RADIUS + b.radius);
-                    const targetY = b.y + Math.sin(angle) * (BALL_RADIUS + b.radius);
-                    ballPos.x = targetX - BALL_RADIUS;
-                    ballPos.y = targetY - BALL_RADIUS;
-    
-                    const speed = Math.sqrt(ballVel.x * ballVel.x + ballVel.y * ballVel.y);
-                    ballVel.x = Math.cos(angle) * speed * BOUNCE;
-                    ballVel.y = Math.sin(angle) * speed * BOUNCE;
-    
-                    // 添加動畫效果
-                    if (timestamp - b.lastHit > 200) {
-                        b.el.classList.add('ball-animation');
-                        setTimeout(() => {
-                            b.el.classList.remove('ball-animation');
-                        }, 300);
-                    }
-                    
-                    addScore(b.points);
-                    b.lastHit = timestamp;
-                    break;
-                }
-            }
-    
-            for (const t of targets) {
-                const dx = ballCenterX - t.x;
-                const dy = ballCenterY - t.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < BALL_RADIUS + t.radius) {
-                    // 添加動畫效果
-                    if (timestamp - t.lastHit > 500) {
-                        t.el.classList.add('target-highlight');
-                        setTimeout(() => {
-                            t.el.classList.remove('target-highlight');
-                        }, 500);
-                    }
-                    
-                    addScore(t.points);
-                    t.lastHit = timestamp;
-                    break;
-                }
-            }
-        }
-    
-        // 增強擋板反彈力道
-        function checkFlipperCollisions() {
-            if (!isBallLaunched) return;
-    
-            const ballCenterY = ballPos.y + BALL_RADIUS;
-            const flipperY = playArea.offsetHeight - 25; // 因擋板變高
-    
-            // 只有球接近底部才檢查
-            if (ballCenterY > flipperY - 30) {
-                const ballCenterX = ballPos.x + BALL_RADIUS;
-                // 擋板中心位置（根據 CSS 寬度 80px 調整）
-                const leftFlipperX = 100 + 40;   // 80/2 = 40
-                const rightFlipperX = playArea.offsetWidth - 100 + 40;
-    
-                // 左擋板碰撞區
-                if (Math.abs(ballCenterX - leftFlipperX) < 60 && ballCenterY > flipperY - 20) {
-                    // 💥 大幅增強反彈力道
-                    ballVel.y = -22;   // 向上速度增加
-                    ballVel.x -= 8;    // 水平推力增加
-                    addScore(5);       // 增加反彈得分
-                    
-                    // 添加碰撞動畫
-                    ball.classList.add('ball-animation');
-                    setTimeout(() => {
-                        ball.classList.remove('ball-animation');
-                    }, 300);
-                }
-                // 右擋板碰撞區
-                else if (Math.abs(ballCenterX - rightFlipperX) < 60 && ballCenterY > flipperY - 20) {
-                    ballVel.y = -22;
-                    ballVel.x += 8;
-                    addScore(5);
-                    
-                    // 添加碰撞動畫
-                    ball.classList.add('ball-animation');
-                    setTimeout(() => {
-                        ball.classList.remove('ball-animation');
-                    }, 300);
-                }
-            }
-        }
-    
-        function addScore(points) {
-            score += points;
-            updateScore();
-        }
-    
-        function updateScore() {
-            scoreEl.textContent = score;
-            ballsEl.textContent = ballsLeft;
-            levelEl.textContent = currentLevel;
-        }
-    
-        function loseBall() {
-            ballsLeft--;
-            updateScore();
-            gameActive = false;
-            isBallLaunched = false;
-    
-            if (ballsLeft <= 0) {
-                endGame();
-            } else {
-                showStartMessage();
-            }
-        }
-    
-        function endGame() {
-            finalScoreEl.textContent = `最終分數：${score}`;
-            gameOverEl.style.display = 'flex';
-        }
-    
-        function restartGame() {
-            gameOverEl.style.display = 'none';
-            initGame();
-        }
-    
-        // 事件監聽
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                if (!gameActive) startNewBall();
-                else launchBall();
-            } else if (e.code === 'ArrowLeft') {
-                activateFlipper(leftFlipper, true);
-            } else if (e.code === 'ArrowRight') {
-                activateFlipper(rightFlipper, false);
-            }
-        });
-    
-        launchButton.addEventListener('click', () => {
-            if (!gameActive) startNewBall();
-            else launchBall();
-        });
-    
-        leftFlipper.addEventListener('click', () => activateFlipper(leftFlipper, true));
-        rightFlipper.addEventListener('click', () => activateFlipper(rightFlipper, false));
-        restartBtn.addEventListener('click', restartGame);
-    
-        window.addEventListener('load', initGame);
     </script>
 </body>
 </html>
