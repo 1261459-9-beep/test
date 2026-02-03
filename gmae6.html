@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beat Battle - 节奏对战</title>
+    <title>Beat Battle - FNF节奏游戏</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            background: linear-gradient(135deg, #2c0735, #1a0a25, #0f3460);
             font-family: 'Arial Rounded MT Bold', 'Segoe UI', Arial, sans-serif;
             height: 100vh;
             display: flex;
@@ -26,7 +26,7 @@
             position: relative;
             width: 900px;
             height: 600px;
-            background: linear-gradient(to bottom, #2c0735, #1a0a25);
+            background: linear-gradient(to bottom, #1a0a25, #2c0735);
             border-radius: 20px;
             box-shadow: 0 0 30px rgba(255, 100, 200, 0.7),
                         0 0 60px rgba(150, 50, 255, 0.5);
@@ -47,8 +47,8 @@
         #player, #opponent {
             position: absolute;
             bottom: 40px;
-            width: 150px;
-            height: 200px;
+            width: 180px;
+            height: 220px;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center bottom;
@@ -56,22 +56,22 @@
         }
         
         #player {
-            left: 100px;
-            background-image: url('image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 200"><circle cx="75" cy="100" r="50" fill="%23ff5252"/><rect x="50" y="140" width="50" height="40" rx="10" fill="%23ff5252"/><circle cx="60" cy="85" r="8" fill="white"/><circle cx="90" cy="85" r="8" fill="white"/><circle cx="60" cy="85" r="4" fill="black"/><circle cx="90" cy="85" r="4" fill="black"/><path d="M65 110 Q75 120 85 110" stroke="black" stroke-width="3" fill="none"/></svg>');
+            left: 80px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 220"><circle cx="90" cy="100" r="55" fill="%23ff5252"/><rect x="60" y="150" width="60" height="50" rx="15" fill="%23ff5252"/><circle cx="75" cy="90" r="10" fill="white"/><circle cx="105" cy="90" r="10" fill="white"/><circle cx="75" cy="90" r="5" fill="black"/><circle cx="105" cy="90" r="5" fill="black"/><path d="M80 120 Q90 130 100 120" stroke="black" stroke-width="3" fill="none"/></svg>');
             transform: scaleX(-1);
         }
         
         #opponent {
-            right: 100px;
-            background-image: url('image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 200"><circle cx="75" cy="100" r="50" fill="%234cc9f0"/><rect x="50" y="140" width="50" height="40" rx="10" fill="%234cc9f0"/><circle cx="60" cy="85" r="8" fill="white"/><circle cx="90" cy="85" r="8" fill="white"/><circle cx="60" cy="85" r="4" fill="black"/><circle cx="90" cy="85" r="4" fill="black"/><path d="M65 115 Q75 110 85 115" stroke="black" stroke-width="3" fill="none"/></svg>');
+            right: 80px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 220"><circle cx="90" cy="100" r="55" fill="%234cc9f0"/><rect x="60" y="150" width="60" height="50" rx="15" fill="%234cc9f0"/><circle cx="75" cy="90" r="10" fill="white"/><circle cx="105" cy="90" r="10" fill="white"/><circle cx="75" cy="90" r="5" fill="black"/><circle cx="105" cy="90" r="5" fill="black"/><path d="M80 125 Q90 120 100 125" stroke="black" stroke-width="3" fill="none"/></svg>');
         }
         
         #arrow-container {
             position: absolute;
-            left: 150px;
+            left: 180px;
             top: 0;
             bottom: 0;
-            width: 600px;
+            width: 540px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -80,10 +80,10 @@
         
         .arrow-track {
             position: relative;
-            height: 80px;
-            margin: 5px 0;
+            height: 100px;
+            margin: 10px 0;
             background: rgba(30, 10, 40, 0.6);
-            border-radius: 40px;
+            border-radius: 50px;
             border: 3px solid #7a3bff;
             overflow: hidden;
         }
@@ -94,7 +94,7 @@
             left: 0;
             top: 0;
             bottom: 0;
-            width: 80px; /* 加宽判定区 */
+            width: 80px;
             background: rgba(255, 255, 255, 0.15);
             border-right: 4px solid #ffd700;
             z-index: 5;
@@ -103,8 +103,8 @@
         
         .arrow {
             position: absolute;
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -112,10 +112,19 @@
             filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
         }
         
-        .arrow.up { background-image: url('image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><polygon points="30,10 50,40 40,40 40,50 20,50 20,40 10,40" fill="%23ffcc00"/></svg>'); }
-        .arrow.down { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><polygon points="30,50 10,20 20,20 20,10 40,10 40,20 50,20" fill="%234cc9f0"/></svg>'); }
-        .arrow.left { background-image: url('image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><polygon points="10,30 40,10 40,20 50,20 50,40 40,40 40,50" fill="%23ff5252"/></svg>'); }
-        .arrow.right { background-image: url('image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><polygon points="50,30 20,10 20,20 10,20 10,40 20,40 20,50" fill="%234ade80"/></svg>'); }
+        /* 修复箭头颜色 - 确保所有方向都有正确颜色 */
+        .arrow.up { 
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="35,15 60,50 50,50 50,55 20,55 20,50 10,50" fill="%23ffcc00"/></svg>'); 
+        }
+        .arrow.down { 
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="35,55 10,20 20,20 20,15 50,15 50,20 60,20" fill="%234cc9f0"/></svg>'); 
+        }
+        .arrow.left { 
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="15,35 50,10 50,20 55,20 55,50 50,50 50,60" fill="%23ff5252"/></svg>'); 
+        }
+        .arrow.right { 
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="55,35 20,10 20,20 15,20 15,50 20,50 20,60" fill="%234ade80"/></svg>'); 
+        }
         
         .arrow.hit {
             transform: scale(1.3);
@@ -126,49 +135,6 @@
         .arrow.miss {
             opacity: 0.3;
             transform: scale(0.8);
-        }
-        
-        #health-container {
-            position: absolute;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 400px;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 20px;
-            border: 3px solid #ff1e8d;
-            overflow: hidden;
-            z-index: 20;
-            box-shadow: 0 0 15px rgba(255, 30, 141, 0.7);
-        }
-        
-        #health-bar {
-            height: 100%;
-            width: 100%;
-            background: linear-gradient(to right, #ff1e8d, #ff5252, #ffc107, #4ade80, #4cc9f0);
-            border-radius: 20px;
-            transition: width 0.3s ease;
-            position: relative;
-        }
-        
-        #health-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to right, 
-                rgba(255,255,255,0.2) 0%, 
-                rgba(255,255,255,0.4) 50%, 
-                rgba(255,255,255,0.2) 100%);
-            animation: health-shine 2s infinite;
-        }
-        
-        @keyframes health-shine {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
         }
         
         #judgment {
@@ -197,7 +163,7 @@
         
         #score-container {
             position: absolute;
-            top: 30px;
+            bottom: 30px;
             right: 40px;
             text-align: right;
             z-index: 20;
@@ -216,6 +182,13 @@
             font-size: 24px;
             margin-top: 5px;
             color: #ff1e8d;
+            font-weight: bold;
+        }
+        
+        #accuracy {
+            font-size: 24px;
+            margin-top: 5px;
+            color: #4ade80;
             font-weight: bold;
         }
         
@@ -397,32 +370,22 @@
             100% { transform: translateX(0); }
         }
         
-        #song-title {
+        /* 修复箭头位置 - 确保在轨道内居中 */
+        .arrow-track:nth-child(1) .arrow { top: 15px; }
+        .arrow-track:nth-child(2) .arrow { top: 15px; }
+        .arrow-track:nth-child(3) .arrow { top: 15px; }
+        .arrow-track:nth-child(4) .arrow { top: 15px; }
+        
+        /* 添加音符轨迹线 */
+        .arrow-track::after {
+            content: '';
             position: absolute;
-            top: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 28px;
-            font-weight: bold;
-            color: #ffcc00;
-            text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
-            z-index: 20;
-            background: rgba(30, 10, 40, 0.7);
-            padding: 5px 20px;
-            border-radius: 20px;
-            border: 2px solid #ffcc00;
-        }
-        
-        /* 判定区高亮提示 */
-        .arrow-track.highlight::before {
-            background: rgba(255, 255, 255, 0.3);
-            animation: highlight-pulse 0.8s infinite;
-        }
-        
-        @keyframes highlight-pulse {
-            0% { background: rgba(255, 255, 255, 0.3); }
-            50% { background: rgba(255, 255, 255, 0.6); }
-            100% { background: rgba(255, 255, 255, 0.3); }
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 1;
         }
     </style>
 </head>
@@ -439,17 +402,13 @@
             <div class="arrow-track" id="track-right"><div class="arrow right"></div></div>
         </div>
         
-        <div id="health-container">
-            <div id="health-bar"></div>
-        </div>
+        <!-- 移除了上方的血条和标题 -->
         
         <div id="score-container">
-            <div>分数</div>
             <div id="score">0</div>
             <div id="combo">连击: 0</div>
+            <div id="accuracy">准确率: 0%</div>
         </div>
-        
-        <div id="song-title">电子节拍对决</div>
         
         <div id="beat-visualizer">
             <div class="beat-light"></div>
@@ -461,11 +420,12 @@
         <div id="judgment">SICK</div>
         
         <div id="start-screen">
-            <h1>BEAT BATTLE</h1>
-            <div class="subtitle">在节奏的战场上击败对手！根据音乐节奏按下正确的方向键</div>
+            <h1>FNF BATTLE</h1>
+            <div class="subtitle">使用 D、F、J、K 键进行游戏！</div>
             <div class="instructions">
-                使用方向键进行游戏: <kbd>←</kbd> <kbd>↓</kbd> <kbd>↑</kbd> <kbd>→</kbd><br>
-                在音符到达左侧黄色判定区时按下对应按键
+                按键顺序 (由上至下):<br>
+                <kbd>D</kbd> = 上 &nbsp;&nbsp; <kbd>F</kbd> = 中上<br>
+                <kbd>J</kbd> = 中下 &nbsp;&nbsp; <kbd>K</kbd> = 下
             </div>
             <button id="start-button">开始游戏</button>
         </div>
@@ -489,22 +449,27 @@
             activeNotes: [],
             time: 0,
             songProgress: 0,
-            bpm: 120,
-            noteSpeed: 1.3,  // 更慢的速度！从1.8降到1.3
+            bpm: 130,
+            noteSpeed: 0.28,
             judgment: { sick: 0, good: 0, bad: 0, miss: 0 },
             lastBeat: 0,
             beatInterval: 0,
             currentBeat: 0,
-            startTime: 0
+            startTime: 0,
+            totalNotes: 0,
+            hitNotes: 0,
+            accuracy: 0,
+            lastHitSuccess: true,
+            processedNotes: 0
         };
         
         // DOM 元素
         const gameContainer = document.getElementById('game-container');
         const player = document.getElementById('player');
         const opponent = document.getElementById('opponent');
-        const healthBar = document.getElementById('health-bar');
         const scoreDisplay = document.getElementById('score');
         const comboDisplay = document.getElementById('combo');
+        const accuracyDisplay = document.getElementById('accuracy');
         const judgmentDisplay = document.getElementById('judgment');
         const startScreen = document.getElementById('start-screen');
         const gameOverScreen = document.getElementById('game-over');
@@ -520,90 +485,29 @@
             3: document.getElementById('track-right')
         };
         
-        // 音符序列 (时间, 方向, 轨道)
-        // 方向: 0=上, 1=下, 2=左, 3=右
-        // 时间单位为毫秒
-        const songNotes = [
-            // 第1小节 - 更宽松的间隔
-            { time: 1200, direction: 0, track: 0 },
-            { time: 1800, direction: 1, track: 1 },
-            { time: 2400, direction: 2, track: 2 },
-            { time: 3000, direction: 3, track: 3 },
+        // 生成完全随机的音符序列
+        function generateRandomNotes() {
+            const notes = [];
+            let currentTime = 1000;
+            const minInterval = 600;
+            const maxInterval = 1200;
             
-            // 第2小节
-            { time: 3600, direction: 2, track: 2 },
-            { time: 4200, direction: 3, track: 3 },
-            { time: 4800, direction: 0, track: 0 },
-            { time: 5400, direction: 1, track: 1 },
+            // 生成40个完全随机的音符
+            for (let i = 0; i < 40; i++) {
+                const direction = Math.floor(Math.random() * 4);
+                const interval = minInterval + Math.random() * (maxInterval - minInterval);
+                
+                notes.push({
+                    time: currentTime,
+                    direction: direction,
+                    track: direction
+                });
+                
+                currentTime += interval;
+            }
             
-            // 第3小节
-            { time: 6000, direction: 0, track: 0 },
-            { time: 6300, direction: 1, track: 1 },
-            { time: 6600, direction: 2, track: 2 },
-            { time: 6900, direction: 3, track: 3 },
-            { time: 7200, direction: 0, track: 0 },
-            { time: 7500, direction: 1, track: 1 },
-            { time: 7800, direction: 2, track: 2 },
-            { time: 8100, direction: 3, track: 3 },
-            
-            // 第4小节
-            { time: 8400, direction: 3, track: 3 },
-            { time: 8700, direction: 2, track: 2 },
-            { time: 9000, direction: 1, track: 1 },
-            { time: 9300, direction: 0, track: 0 },
-            { time: 9600, direction: 3, track: 3 },
-            { time: 9900, direction: 2, track: 2 },
-            { time: 10200, direction: 1, track: 1 },
-            { time: 10500, direction: 0, track: 0 },
-            
-            // 第5小节
-            { time: 10800, direction: 0, track: 0 },
-            { time: 11100, direction: 2, track: 2 },
-            { time: 11400, direction: 1, track: 1 },
-            { time: 11700, direction: 3, track: 3 },
-            { time: 12000, direction: 0, track: 0 },
-            { time: 12300, direction: 2, track: 2 },
-            { time: 12600, direction: 1, track: 1 },
-            { time: 12900, direction: 3, track: 3 },
-            
-            // 第6小节
-            { time: 13200, direction: 2, track: 2 },
-            { time: 13500, direction: 0, track: 0 },
-            { time: 13800, direction: 3, track: 3 },
-            { time: 14100, direction: 1, track: 1 },
-            { time: 14400, direction: 2, track: 2 },
-            { time: 14700, direction: 0, track: 0 },
-            { time: 15000, direction: 3, track: 3 },
-            { time: 15300, direction: 1, track: 1 },
-            
-            // 第7小节 - 高潮（节奏稍快但判定宽松）
-            { time: 15600, direction: 0, track: 0 },
-            { time: 15750, direction: 1, track: 1 },
-            { time: 15900, direction: 2, track: 2 },
-            { time: 16050, direction: 3, track: 3 },
-            { time: 16200, direction: 0, track: 0 },
-            { time: 16350, direction: 1, track: 1 },
-            { time: 16500, direction: 2, track: 2 },
-            { time: 16650, direction: 3, track: 3 },
-            { time: 16800, direction: 0, track: 0 },
-            { time: 16950, direction: 1, track: 1 },
-            { time: 17100, direction: 2, track: 2 },
-            { time: 17250, direction: 3, track: 3 },
-            { time: 17400, direction: 0, track: 0 },
-            { time: 17550, direction: 1, track: 1 },
-            { time: 17700, direction: 2, track: 2 },
-            { time: 17850, direction: 3, track: 3 },
-            
-            // 第8小节 - 结尾
-            { time: 18000, direction: 3, track: 3 },
-            { time: 18300, direction: 1, track: 1 },
-            { time: 18600, direction: 2, track: 2 },
-            { time: 18900, direction: 0, track: 0 },
-            { time: 19200, direction: 3, track: 3 },
-            { time: 19500, direction: 1, track: 1 },
-            { time: 19800, direction: 2, track: 2 },
-            { time: 20100, direction: 0, track: 0 }
-        ];
+            return notes;
+        }
         
         // 初始化游戏
         function initGame() {
@@ -613,29 +517,34 @@
             gameState.score = 0;
             gameState.combo = 0;
             gameState.maxCombo = 0;
-            gameState.notes = [...songNotes];
+            gameState.notes = generateRandomNotes();
             gameState.activeNotes = [];
             gameState.time = 0;
             gameState.songProgress = 0;
-            gameState.bpm = 120;
-            gameState.noteSpeed = 1.3;  // 慢速
+            gameState.bpm = 130;
+            gameState.noteSpeed = 0.28;
             gameState.judgment = { sick: 0, good: 0, bad: 0, miss: 0 };
             gameState.lastBeat = Date.now();
             gameState.beatInterval = 60000 / gameState.bpm;
             gameState.currentBeat = 0;
             gameState.startTime = Date.now();
+            gameState.totalNotes = gameState.notes.length;
+            gameState.hitNotes = 0;
+            gameState.accuracy = 0;
+            gameState.lastHitSuccess = true;
+            gameState.processedNotes = 0;
             
-            // 重置UI
-            healthBar.style.width = `${gameState.health}%`;
+            // 更新UI
             scoreDisplay.textContent = '0';
             comboDisplay.textContent = '连击: 0';
+            accuracyDisplay.textContent = `准确率: ${Math.round(gameState.accuracy)}%`;
             comboDisplay.className = '';
             
             // 隐藏开始屏幕
             startScreen.style.display = 'none';
             gameOverScreen.style.display = 'none';
             
-            // 清除所有旧音符
+            // 清除旧音符
             document.querySelectorAll('.arrow').forEach(note => {
                 if (note.parentNode) {
                     note.parentNode.removeChild(note);
@@ -670,7 +579,7 @@
             }
             
             // 检查歌曲是否结束
-            if (gameState.songProgress > 21000 && gameState.activeNotes.length === 0) {
+            if (gameState.songProgress > 50000 && gameState.activeNotes.length === 0) {
                 endGame();
                 return;
             }
@@ -682,10 +591,10 @@
         function generateNotes() {
             const currentTime = gameState.songProgress;
             
-            // 提前2.5秒生成音符
+            // 提前4秒生成音符
             for (let i = gameState.notes.length - 1; i >= 0; i--) {
                 const note = gameState.notes[i];
-                if (note.time <= currentTime + 2500 && note.time >= currentTime) {
+                if (note.time <= currentTime + 4000 && note.time >= currentTime) {
                     createNote(note.direction, note.track, note.time);
                     gameState.notes.splice(i, 1);
                 }
@@ -702,6 +611,7 @@
             arrow.style.left = '100%';
             arrow.dataset.time = time;
             arrow.dataset.hit = 'false';
+            arrow.dataset.order = gameState.processedNotes + gameState.activeNotes.length;
             
             arrowContainer.appendChild(arrow);
             
@@ -711,7 +621,8 @@
                 direction: direction,
                 track: track,
                 time: time,
-                hit: false
+                hit: false,
+                order: gameState.processedNotes + gameState.activeNotes.length
             });
         }
         
@@ -745,14 +656,16 @@
                     const notePosition = parseInt(noteElement.style.left) || 0;
                     
                     // 如果音符已经通过判定线太远
-                    if (notePosition < judgeLine - 80) {
+                    if (notePosition < judgeLine - 60) {
                         noteElement.classList.add('miss');
                         showJudgment('miss', noteElement);
-                        updateHealth(-5);
+                        
+                        // MISS会重置连击
                         gameState.combo = 0;
                         comboDisplay.textContent = `连击: ${gameState.combo}`;
                         comboDisplay.className = '';
                         gameState.judgment.miss++;
+                        gameState.lastHitSuccess = false;
                         
                         note.hit = true;
                         
@@ -763,6 +676,7 @@
                         
                         // 从activeNotes中移除
                         gameState.activeNotes.splice(i, 1);
+                        gameState.processedNotes++;
                     }
                 }
             }
@@ -774,6 +688,13 @@
             if (type !== 'miss') {
                 gameState.judgment[type]++;
             }
+            
+            // 更新命中计数
+            if (type !== 'miss') {
+                gameState.hitNotes++;
+            }
+            gameState.accuracy = (gameState.hitNotes / gameState.totalNotes) * 100;
+            accuracyDisplay.textContent = `准确率: ${Math.round(gameState.accuracy)}%`;
             
             // 显示判定文本
             judgmentDisplay.textContent = type.toUpperCase();
@@ -812,17 +733,13 @@
             }
         }
         
-        // 更新生命值
+        // 更新生命值（简化，不再显示血条）
         function updateHealth(amount) {
             gameState.health = Math.max(0, Math.min(100, gameState.health + amount));
-            healthBar.style.width = `${gameState.health}%`;
             
-            // 生命值动画
-            if (amount < 0) {
-                healthBar.style.animation = 'none';
-                setTimeout(() => {
-                    healthBar.style.animation = 'health-shine 2s infinite';
-                }, 10);
+            // 游戏结束检查移到这里
+            if (gameState.health <= 0) {
+                endGame();
             }
         }
         
@@ -845,9 +762,14 @@
             gameState.score += points;
             scoreDisplay.textContent = gameState.score;
             
-            // 更新连击
+            // 更新连击（按音符顺序）
             if (judgmentType !== 'miss') {
-                gameState.combo++;
+                if (gameState.lastHitSuccess) {
+                    gameState.combo++;
+                } else {
+                    gameState.combo = 1;
+                }
+                gameState.lastHitSuccess = true;
                 gameState.maxCombo = Math.max(gameState.maxCombo, gameState.combo);
                 
                 comboDisplay.textContent = `连击: ${gameState.combo}`;
@@ -856,35 +778,32 @@
                 gameState.combo = 0;
                 comboDisplay.textContent = `连击: ${gameState.combo}`;
                 comboDisplay.className = '';
+                gameState.lastHitSuccess = false;
             }
         }
         
-        // 按键处理
+        // 按键处理 - D、F、J、K 由上至下
         function handleKeyPress(key) {
             if (!gameState.playing) return;
             
             let direction = -1;
             let track = -1;
             
-            // 确定按下的方向
+            // D、F、J、K 对应四个轨道（由上至下）
             switch(key) {
-                case 'ArrowUp':
-                case 'KeyW':
+                case 'KeyD': // D = 第1轨道（上）
                     direction = 0;
                     track = 0;
                     break;
-                case 'ArrowDown':
-                case 'KeyS':
+                case 'KeyF': // F = 第2轨道（中上）
                     direction = 1;
                     track = 1;
                     break;
-                case 'ArrowLeft':
-                case 'KeyA':
+                case 'KeyJ': // J = 第3轨道（中下）
                     direction = 2;
                     track = 2;
                     break;
-                case 'ArrowRight':
-                case 'KeyD':
+                case 'KeyK': // K = 第4轨道（下）
                     direction = 3;
                     track = 3;
                     break;
@@ -892,69 +811,76 @@
                     return;
             }
             
-            // 超级宽松的判定窗口！
+            // 超级宽松的判定窗口
             const judgeLine = 60;
             const judgeWindow = { 
-                sick: 60,   // 60像素内都是SICK
-                good: 100,  // 100像素内是GOOD
-                bad: 150    // 150像素内是BAD
+                sick: 80,
+                good: 120,
+                bad: 180
             };
             
-            let closestNote = null;
-            let closestDistance = Infinity;
+            // 找最早出现的匹配音符
+            let targetNote = null;
+            let minOrder = Infinity;
             
             for (const note of gameState.activeNotes) {
                 if (!note.hit && note.direction === direction && note.track === track) {
                     const notePosition = parseInt(note.element.style.left) || 0;
                     const distance = Math.abs(notePosition - judgeLine);
                     
-                    if (distance < closestDistance && distance < judgeWindow.bad) {
-                        closestDistance = distance;
-                        closestNote = note;
+                    if (distance < judgeWindow.bad) {
+                        if (note.order < minOrder) {
+                            minOrder = note.order;
+                            targetNote = note;
+                        }
                     }
                 }
             }
             
             // 处理命中
-            if (closestNote) {
-                closestNote.hit = true;
-                closestNote.element.classList.add('hit');
+            if (targetNote) {
+                targetNote.hit = true;
+                targetNote.element.classList.add('hit');
                 
-                // 确定判定类型（非常宽松）
+                // 确定判定类型
+                const notePosition = parseInt(targetNote.element.style.left) || 0;
+                const distance = Math.abs(notePosition - judgeLine);
                 let judgmentType = 'bad';
-                if (closestDistance < judgeWindow.sick) {
+                
+                if (distance < judgeWindow.sick) {
                     judgmentType = 'sick';
-                    updateHealth(5); // SICK回复更多生命
-                } else if (closestDistance < judgeWindow.good) {
+                    updateHealth(6);
+                } else if (distance < judgeWindow.good) {
                     judgmentType = 'good';
-                    updateHealth(3);
+                    updateHealth(4);
                 } else {
-                    updateHealth(1);
+                    updateHealth(2);
                 }
                 
                 // 显示判定并更新分数
-                showJudgment(judgmentType, closestNote.element);
+                showJudgment(judgmentType, targetNote.element);
                 updateScore(judgmentType);
                 
                 // 移除音符
                 setTimeout(() => {
-                    if (closestNote.element && closestNote.element.parentNode) {
-                        closestNote.element.parentNode.removeChild(closestNote.element);
+                    if (targetNote.element && targetNote.element.parentNode) {
+                        targetNote.element.parentNode.removeChild(targetNote.element);
                         
-                        const index = gameState.activeNotes.indexOf(closestNote);
+                        const index = gameState.activeNotes.indexOf(targetNote);
                         if (index !== -1) {
                             gameState.activeNotes.splice(index, 1);
+                            gameState.processedNotes++;
                         }
                     }
                 }, 200);
             } else {
-                // 误按惩罚减轻
+                // 误按处理
                 const trackElement = document.querySelector('.arrow-track:nth-child(' + (track + 1) + ')');
                 if (trackElement) {
-                    showJudgment('bad', trackElement); // 误按只算BAD，不算MISS
-                    updateHealth(-2); // 减少惩罚
-                    // 不重置连击
+                    showJudgment('bad', trackElement);
+                    updateHealth(-2);
                     gameState.judgment.bad++;
+                    gameState.lastHitSuccess = false;
                 }
             }
         }
@@ -963,8 +889,11 @@
         function endGame() {
             gameState.playing = false;
             
+            // 计算最终准确率
+            gameState.accuracy = (gameState.hitNotes / gameState.totalNotes) * 100;
+            
             // 显示游戏结束屏幕
-            finalScoreDisplay.textContent = `最终分数: ${gameState.score}\n最大连击: ${gameState.maxCombo}\nSICK: ${gameState.judgment.sick} | GOOD: ${gameState.judgment.good} | BAD: ${gameState.judgment.bad} | MISS: ${gameState.judgment.miss}`;
+            finalScoreDisplay.textContent = `最终分数: ${gameState.score}\n最大连击: ${gameState.maxCombo}\n准确率: ${Math.round(gameState.accuracy)}%\nSICK: ${gameState.judgment.sick} | GOOD: ${gameState.judgment.good} | BAD: ${gameState.judgment.bad} | MISS: ${gameState.judgment.miss}`;
             gameOverScreen.style.display = 'flex';
         }
         
@@ -973,18 +902,15 @@
         restartButton.addEventListener('click', initGame);
         
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
-                e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
-                e.key === 'w' || e.key === 's' || 
-                e.key === 'a' || e.key === 'd' ||
-                e.key === 'W' || e.key === 'S' || 
-                e.key === 'A' || e.key === 'D') {
+            // D、F、J、K 键
+            if (e.code === 'KeyD' || e.code === 'KeyF' || 
+                e.code === 'KeyJ' || e.code === 'KeyK') {
                 e.preventDefault();
-                handleKeyPress(e.key);
+                handleKeyPress(e.code);
             }
         });
         
-        // 判定区高亮提示（帮助玩家找准时机）
+        // 判定区高亮提示
         setInterval(() => {
             if (gameState.playing) {
                 const now = Date.now() - gameState.startTime;
@@ -992,14 +918,14 @@
                 // 预测即将到达判定区的音符
                 for (const note of gameState.activeNotes) {
                     if (!note.hit) {
-                        const timeToJudge = note.time - now + 300; // 提前300ms提示
-                        if (timeToJudge > 0 && timeToJudge < 200) {
+                        const timeToJudge = note.time - now + 500;
+                        if (timeToJudge > 0 && timeToJudge < 300) {
                             const trackEl = trackElements[note.track];
                             if (trackEl) {
                                 trackEl.classList.add('highlight');
                                 setTimeout(() => {
                                     trackEl.classList.remove('highlight');
-                                }, 300);
+                                }, 500);
                             }
                         }
                     }
@@ -1008,7 +934,7 @@
         }, 100);
         
         // 初始设置
-        healthBar.style.width = `${gameState.health}%`;
+        accuracyDisplay.textContent = `准确率: 0%`;
     </script>
 </body>
 </html>
