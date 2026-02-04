@@ -277,7 +277,7 @@
             cursor: pointer;
             font-weight: bold;
             letter-spacing: 2px;
-            box-shadow: 0 5px 0 #9e0f5a, 
+            box-shadow: 0 5px 0 #9e0f5a,
                         0 0 30px rgba(255, 30, 141, 0.7),
                         0 0 60px rgba(255, 30, 141, 0.4);
             transition: all 0.1s ease;
@@ -315,6 +315,19 @@
         
         button:hover::after {
             transform: scale(1);
+        }
+        
+        .start-hint {
+            font-size: 24px;
+            color: #ffd700;
+            margin-top: 30px;
+            animation: blink 1.5s infinite;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
         #beat-visualizer {
@@ -420,14 +433,15 @@
         <div id="judgment">SICK</div>
         
         <div id="start-screen">
-            <h1>FNF BATTLE</h1>
-            <div class="subtitle">使用 D、F、J、K 键进行游戏！</div>
+            <h1>節奏大師</h1>
+            <div class="subtitle">按任意鍵開始遊戲</div>
             <div class="instructions">
-                按键顺序 (由上至下):<br>
+                遊戲控制鍵 (由上至下):<br>
                 <kbd>D</kbd> = 上 &nbsp;&nbsp; <kbd>F</kbd> = 中上<br>
                 <kbd>J</kbd> = 中下 &nbsp;&nbsp; <kbd>K</kbd> = 下
             </div>
-            <button id="start-button">开始游戏</button>
+            <button id="start-button">開始遊戲</button>
+            <div class="start-hint">按任意鍵或點擊按鈕開始</div>
         </div>
         
         <div id="game-over">
@@ -901,9 +915,17 @@
         startButton.addEventListener('click', initGame);
         restartButton.addEventListener('click', initGame);
         
+        // 按任意鍵開始遊戲
         document.addEventListener('keydown', (e) => {
-            // D、F、J、K 键
-            if (e.code === 'KeyD' || e.code === 'KeyF' || 
+            // 如果遊戲還沒開始，按任意鍵開始遊戲
+            if (!gameState.playing && startScreen.style.display !== 'none') {
+                e.preventDefault();
+                initGame();
+                return;
+            }
+            
+            // D、F、J、K 键 - 遊戲進行中的控制
+            if (e.code === 'KeyD' || e.code === 'KeyF' ||
                 e.code === 'KeyJ' || e.code === 'KeyK') {
                 e.preventDefault();
                 handleKeyPress(e.code);
