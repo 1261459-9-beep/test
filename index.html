@@ -579,3 +579,534 @@
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             }
         }
+
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 150px 0 80px;
+            }
+            
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+            
+            .game-card {
+                padding: 20px;
+            }
+            
+            .game-icon {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header 導航欄 -->
+    <header>
+        <div class="container">
+            <div class="nav-container">
+                <a href="#" class="logo">
+                    <i class="fas fa-gamepad logo-icon"></i>
+                    <span class="logo-text">Game Center</span>
+                </a>
+                
+                <nav class="nav-links">
+                    <a href="#games" class="nav-link">遊戲列表</a>
+                    <a href="#categories" class="nav-link">遊戲分類</a>
+                    <a href="#features" class="nav-link">特色功能</a>
+                    <a href="#about" class="nav-link">關於我們</a>
+                </nav>
+                
+                <div class="nav-actions">
+                    <button class="search-btn" aria-label="搜尋">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="theme-toggle" id="themeToggle" aria-label="切換主題">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="container">
+            <h1 class="hero-title">遊戲中心</h1>
+            <p class="hero-subtitle">
+                探索7款精心設計的HTML5遊戲，從經典貪食蛇到節奏大師，享受無需下載的即時遊戲體驗
+            </p>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">款遊戲</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">免費遊玩</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">需下載</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">隨時遊玩</div>
+                </div>
+            </div>
+            
+            <div class="cta-buttons">
+                <a href="#games" class="btn btn-primary">
+                    <i class="fas fa-play-circle"></i>
+                    開始遊戲
+                </a>
+                <a href="#features" class="btn btn-secondary">
+                    <i class="fas fa-info-circle"></i>
+                    了解更多
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 遊戲卡片區 -->
+    <section id="games" class="games-section">
+        <div class="container">
+            <h2 class="section-title">遊戲列表</h2>
+            <div class="games-grid">
+                <!-- 貪食蛇遊戲 -->
+                <div class="game-card">
+                    <i class="fas fa-snake game-icon" style="color: var(--accent-green);"></i>
+                    <h3 class="game-title">貪食蛇</h3>
+                    <p class="game-description">
+                        經典的貪食蛇遊戲，控制蛇吃食物變長，避免撞牆或咬到自己。支援三種難度等級和本地高分記錄。
+                    </p>
+                    <div class="game-meta">
+                        <span class="game-category">經典遊戲</span>
+                        <span class="game-difficulty">難度: 中等</span>
+                    </div>
+                    <a href="game1.html" class="game-play-btn">
+                        <i class="fas fa-play"></i> 開始遊戲
+                    </a>
+                </div>
+
+                <!-- 2048遊戲 -->
+                <div class="game-card">
+                    <i class="fas fa-th game-icon" style="color: var(--accent-blue);"></i>
+                    <h3 class="game-title">2048</h3>
+                    <p class="game-description">
+                        數字合併益智遊戲，滑動方塊合併相同數字，目標是創造2048方塊。支援鍵盤和觸控操作。
+                    </p>
+                    <div class="game-meta">
+                        <span class="game-category">益智遊戲</span>
+                        <span class="game-difficulty">難度: 中等</span>
+                    </div>
+                    <a href="game2.html" class="game-play-btn">
+                        <i class="fas fa-play"></i> 開始遊戲
+                    </a>
+                </div>
+
+                <!-- 恐龍遊戲 -->
+                <div class="game-card">
+                    <i class="fas fa-dinosaur game-icon" style="color: var(--accent-pink);"></i>
+                    <h3 class="game-title">恐龍跑酷</h3>
+                    <p class="game-description">
+                        模仿Google Chrome恐龍遊戲，控制恐龍跳躍躲避仙人掌。有三種難度模式，挑戰你的反應速度。
+                    </p>
+                    <div class="game-meta">
+                        <span class="game-category">跑酷遊戲</span>
+                        <span class="game-difficulty">難度: 簡單</span>
+                    </div>
+                    <a href="game3.html" class="game-play-btn">
+                        <i class="fas fa-play"></i> 開始遊戲
+                    </a>
+                </div>
+
+                <!-- 彈珠波子機 -->
+                <div class="game-card">
+                    <i class="fas fa-basketball-ball game-icon" style="color: var(--accent-blue);"></i>
+                    <h3 class="game-title">彈珠波子機</h3>
+                    <p class="game-description">
+                        經典彈珠台遊戲，發射彈珠擊中目標得分。有兩種版本：複雜版和簡化版，提供不同的遊戲體驗。
+                    </p>
+                    <div class="game-meta">
+                        <span class="game-category">街機遊戲</span>
+                        <span class="game-difficulty">難度: 困難</span>
+                    </div>
+                    <a href="game4.html" class="game-play-btn">
+                        <i class="fas fa-play"></i> 開始遊戲
+                    </a>
+                </div>
+
+                <!-- 五子棋遊戲 -->
+                <div class="game-card">
+                    <i class="fas fa-chess-board game-icon" style="color: var(--accent-green);"></i>
+                    <h3 class="game-title">五子棋</h3>
+                    <p class="game-description">
+                        經典的五子棋遊戲，與AI對戰，先在棋盤上連成五子者獲勝。支援三種AI難度等級。
+                    </p>
+                    <div class="game-meta">
+                        <span class="game-category">棋類遊戲</span>
+                        <span class="game-difficulty">難度: 可調</span>
+                    </div>
+                    <a href="game5.html" class="game-play-btn">
+                        <i class="fas fa-play"></i> 開始遊戲
+                    </a>
+                </div>
+
+                <!-- 節奏遊戲 -->
+                <div class="game-card">
+                    <i class="fas fa-music game-icon" style="color: var(--accent-pink);"></i>
+                    <h3 class="game-title">節奏大師</h3>
+                    <p class="game-description">
+                        節奏遊戲，跟隨音樂節拍按下對應按鍵。有開始畫面，按任意鍵開始遊戲，挑戰你的節奏感。
+                    </p>
+                    <div class="game-meta">
+                        <span class="game-category">音樂遊戲</span>
+                        <span class="game-difficulty">難度: 困難</span>
+                    </div>
+                    <a href="game6.html" class="game-play-btn">
+                        <i class="fas fa-play"></i> 開始遊戲
+                    </a>
+                </div>
+
+                <!-- 彈珠波子機簡化版 -->
+                <div class="game-card">
+                    <i class="fas fa-table-tennis game-icon" style="color: var(--accent-blue);"></i>
+                    <h3 class="game-title">彈珠波子機 (簡化版)</h3>
+                    <p class="game-description">
+                        彈珠波子機的簡化版本，更簡單的界面和遊戲機制，適合初學者體驗彈珠遊戲的樂趣。
+                    </p>
+                    <div class="game-meta">
+                        <span class="game-category">街機遊戲</span>
+                        <span class="game-difficulty">難度: 簡單</span>
+                    </div>
+                    <a href="game4(2).html" class="game-play-btn">
+                        <i class="fas fa-play"></i> 開始遊戲
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 遊戲分類區 -->
+    <section id="categories" class="categories-section">
+        <div class="container">
+            <h2 class="section-title">遊戲分類</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <i class="fas fa-puzzle-piece category-icon"></i>
+                    <h3 class="category-title">益智遊戲</h3>
+                    <p class="category-count">2 款遊戲</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-running category-icon"></i>
+                    <h3 class="category-title">跑酷遊戲</h3>
+                    <p class="category-count">1 款遊戲</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-chess category-icon"></i>
+                    <h3 class="category-title">棋類遊戲</h3>
+                    <p class="category-count">1 款遊戲</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-music category-icon"></i>
+                    <h3 class="category-title">音樂遊戲</h3>
+                    <p class="category-count">1 款遊戲</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-gamepad category-icon"></i>
+                    <h3 class="category-title">街機遊戲</h3>
+                    <p class="category-count">2 款遊戲</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-history category-icon"></i>
+                    <h3 class="category-title">經典遊戲</h3>
+                    <p class="category-count">1 款遊戲</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 特色功能區 -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2 class="section-title">特色功能</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-desktop feature-icon"></i>
+                    <h3 class="feature-title">響應式設計</h3>
+                    <p class="feature-description">
+                        所有遊戲都採用響應式設計，可在桌面、平板和手機上完美運行，提供一致的遊戲體驗。
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-trophy feature-icon"></i>
+                    <h3 class="feature-title">本地高分記錄</h3>
+                    <p class="feature-description">
+                        多款遊戲支援本地儲存，保存你的最高分數，讓你可以不斷挑戰自己的記錄。
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-sliders-h feature-icon"></i>
+                    <h3 class="feature-title">可調難度</h3>
+                    <p class="feature-description">
+                        大部分遊戲提供多種難度等級，從初學者到專家都能找到適合自己的挑戰。
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-keyboard feature-icon"></i>
+                    <h3 class="feature-title">鍵盤控制</h3>
+                    <p class="feature-description">
+                        所有遊戲都支援鍵盤控制，部分遊戲還支援觸控操作，提供多種控制方式。
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-palette feature-icon"></i>
+                    <h3 class="feature-title">精美視覺</h3>
+                    <p class="feature-description">
+                        每款遊戲都有獨特的視覺設計，從簡約風格到華麗效果，提供視覺上的享受。
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-code feature-icon"></i>
+                    <h3 class="feature-title">純HTML5技術</h3>
+                    <p class="feature-description">
+                        所有遊戲都使用純HTML5、CSS3和JavaScript開發，無需安裝任何插件或軟體。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="about">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <h3 class="footer-logo">Game Center</h3>
+                    <p class="footer-description">
+                        一個收集了7款精心設計的HTML5遊戲的遊戲中心。所有遊戲都免費遊玩，無需下載，直接在瀏覽器中享受遊戲樂趣。
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>快速連結</h3>
+                    <ul>
+                        <li><a href="#games">遊戲列表</a></li>
+                        <li><a href="#categories">遊戲分類</a></li>
+                        <li><a href="#features">特色功能</a></li>
+                        <li><a href="#about">關於我們</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact">
+                    <h3>聯絡我們</h3>
+                    <p class="footer-description">
+                        如有任何問題或建議，歡迎透過以下方式聯絡我們：
+                    </p>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> contact@gamecenter.example.com</li>
+                        <li><i class="fas fa-phone"></i> +886 2 1234 5678</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 台北市信義區</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Game Center. 所有遊戲版權歸原作者所有。本網站僅供學習和展示用途。</p>
+                <p>設計與開發：HTML5遊戲愛好者</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 主題切換功能
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // 檢查本地儲存的主題偏好
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        
+        // 應用主題
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                document.documentElement.style.setProperty('--primary-dark', '#f0f2f5');
+                document.documentElement.style.setProperty('--secondary-dark', '#ffffff');
+                document.documentElement.style.setProperty('--text-primary', '#1a1a1a');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--card-bg', 'rgba(255, 255, 255, 0.9)');
+                document.documentElement.style.setProperty('--card-border', 'rgba(0, 0, 0, 0.1)');
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                // 恢復深色主題
+                document.documentElement.style.setProperty('--primary-dark', '#0a192f');
+                document.documentElement.style.setProperty('--secondary-dark', '#112240');
+                document.documentElement.style.setProperty('--text-primary', '#e6f1ff');
+                document.documentElement.style.setProperty('--text-secondary', '#8892b0');
+                document.documentElement.style.setProperty('--card-bg', 'rgba(17, 34, 64, 0.7)');
+                document.documentElement.style.setProperty('--card-border', 'rgba(0, 212, 255, 0.3)');
+                themeIcon.className = 'fas fa-moon';
+            }
+            localStorage.setItem('theme', theme);
+        }
+        
+        // 初始化主題
+        applyTheme(currentTheme);
+        
+        // 切換主題事件
+        themeToggle.addEventListener('click', () => {
+            const current = localStorage.getItem('theme') || 'dark';
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        });
+        
+        // 搜尋功能
+        const searchBtn = document.querySelector('.search-btn');
+        searchBtn.addEventListener('click', () => {
+            const searchTerm = prompt('請輸入要搜尋的遊戲名稱或關鍵字：');
+            if (searchTerm) {
+                const games = document.querySelectorAll('.game-card');
+                let found = false;
+                
+                games.forEach(game => {
+                    const title = game.querySelector('.game-title').textContent.toLowerCase();
+                    const description = game.querySelector('.game-description').textContent.toLowerCase();
+                    const searchLower = searchTerm.toLowerCase();
+                    
+                    if (title.includes(searchLower) || description.includes(searchLower)) {
+                        game.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        game.style.animation = 'none';
+                        setTimeout(() => {
+                            game.style.animation = 'pulse 1s 3';
+                        }, 10);
+                        found = true;
+                    }
+                });
+                
+                if (!found) {
+                    alert(`未找到包含 "${searchTerm}" 的遊戲`);
+                }
+            }
+        });
+        
+        // 平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // 添加脈衝動畫
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.7); }
+                70% { box-shadow: 0 0 0 20px rgba(0, 212, 255, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // 遊戲卡片懸停效果增強
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const icon = card.querySelector('.game-icon');
+                const colors = ['#00d4ff', '#ff00ff', '#00ff9d'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                icon.style.color = randomColor;
+                icon.style.transition = 'color 0.3s ease';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                const icon = card.querySelector('.game-icon');
+                icon.style.color = '';
+            });
+        });
+        
+        console.log('Game Center 已載入完成！');
