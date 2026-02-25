@@ -24,6 +24,7 @@
         .game-container {
             text-align: center;
             color: white;
+            position: relative;
         }
         
         h1 {
@@ -42,11 +43,15 @@
         }
         
         .score-board {
+            position: absolute;
+            top: 20px;
+            left: 20px;
             background: rgba(0, 0, 0, 0.7);
             padding: 10px 20px;
             border-radius: 10px;
             display: inline-block;
             min-width: 180px;
+            z-index: 5;
         }
         
         .score {
@@ -98,6 +103,42 @@
             font-size: 0.9rem;
             max-width: 500px;
             line-height: 1.5;
+        }
+        
+        .start-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 20;
+            border: 3px solid #00d4ff;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            min-width: 400px;
+        }
+        
+        .start-screen h2 {
+            font-size: 3rem;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.7);
+        }
+        
+        .start-screen p {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+        
+        .press-key {
+            font-size: 1.5rem;
+            color: #ffdd55;
+            animation: pulse 1.5s infinite;
+            margin-top: 20px;
         }
         
         .game-over {
@@ -157,6 +198,12 @@
     </style>
 </head>
 <body>
+    <div class="start-screen" id="startScreen">
+        <h2>貪食蛇</h2>
+        <p>控制蛇吃食物，避免撞牆或咬到自己</p>
+        <div class="press-key">按任意鍵開始遊戲</div>
+    </div>
+    
     <div class="game-container">
         <h1>貪吃蛇遊戲</h1>
         
@@ -181,13 +228,13 @@
         
         <div class="instructions">
             <p>使用方向鍵或 WASD 控制蛇的移動方向</p>
-            <p>吃到紅色蘋果會變長並增加分數！</p>
-            <p>遊戲已自動開始，請直接移動蛇</p>
+            <p>吃到紅色蘋果會變長並增加 10 分！</p>
+            <p>按任意鍵開始遊戲</p>
             <p>難易度影響蛇的移動速度</p>
         </div>
         
         <div class="game-over" id="gameOver">
-            <h2>遊戲結束!</h2>
+            <h2>💀 Game Over</h2>
             <p>你的分數: <span id="finalScore">0</span></p>
             <p>最高分: <span id="finalHighScore">0</span></p>
             <p id="newHighScoreMessage" class="new-high-score" style="display:none;">恭喜! 創造新紀錄!</p>
@@ -204,6 +251,7 @@
         const finalScoreDisplay = document.getElementById('finalScore');
         const finalHighScoreDisplay = document.getElementById('finalHighScore');
         const gameOverScreen = document.getElementById('gameOver');
+        const startScreen = document.getElementById('startScreen');
         const restartBtn = document.getElementById('restartBtn');
         const difficultySelect = document.getElementById('difficulty');
         const newHighScoreMessage = document.getElementById('newHighScoreMessage');
@@ -212,7 +260,7 @@
         const difficultySettings = {
             easy: {
                 speed: 150,    // 每150ms移動一格
-                foodScore: 5,  // 每個食物得分
+                foodScore: 10,  // 每個食物得分固定10分
                 color: '#4CAF50'
             },
             medium: {
@@ -222,12 +270,12 @@
             },
             hard: {
                 speed: 90,     // 每90ms移動一格
-                foodScore: 15,
+                foodScore: 10,
                 color: '#FF9800'
             },
             expert: {
                 speed: 60,     // 每60ms移動一格
-                foodScore: 20,
+                foodScore: 10,
                 color: '#F44336'
             }
         };
@@ -242,7 +290,8 @@
         let nextDirection = 'right';
         let score = 0;
         let highScore = 0;
-        let gameRunning = true;
+        let gameRunning = false; // 初始為false，等待開始
+        let gameStarted = false; // 遊戲是否已開始
         let gameLoop;
         let currentDifficulty = 'medium';
         let newHighScoreAchieved = false;
@@ -268,6 +317,7 @@
             score = 0;
             scoreDisplay.textContent = score;
             gameRunning = true;
+            gameStarted = true;
             gameOverScreen.style.display = 'none';
             newHighScoreMessage.style.display = 'none';
             newHighScoreAchieved = false;
@@ -282,6 +332,16 @@
             
             // 更新畫布邊框顏色
             canvas.style.borderColor = difficultySettings[currentDifficulty].color;
+        }
+        
+        // 開始遊戲（當玩家按下任意鍵）
+        function startGame() {
+            if (gameStarted) return; // 防止重複開始
+            
+            // 隱藏開始畫面
+            startScreen.style.display = 'none';
+            // 初始化遊戲
+            initGame();
         }
         
         // 載入最高分紀錄
@@ -485,6 +545,12 @@
         
         // 鍵盤控制
         function handleKeyPress(e) {
+            // 如果遊戲尚未開始，按任意鍵開始遊戲
+            if (!gameStarted) {
+                startGame();
+                return;
+            }
+            
             if (!gameRunning) return;
             
             // 防止180度轉向
@@ -538,9 +604,12 @@
         restartBtn.addEventListener('click', restartGame);
         difficultySelect.addEventListener('change', changeDifficulty);
         
-        // 頁面加載後自動開始遊戲
+        // 頁面加載後顯示開始畫面
         window.onload = function() {
-            initGame();
+            // 顯示開始畫面，遊戲尚未開始
+            startScreen.style.display = 'block';
+            gameStarted = false;
+            gameRunning = false;
         };
     </script>
 </body>
