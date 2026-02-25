@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beat Battle - FNF节奏游戏</title>
     <style>
+        /* CSS Variables for Dark Tech Theme */
+        :root {
+            --primary-dark: #0a192f;
+            --secondary-dark: #112240;
+            --accent-blue: #00d4ff;
+            --accent-pink: #ff00ff;
+            --accent-green: #00ff9d;
+            --accent-yellow: #ffd700;
+            --text-primary: #e6f1ff;
+            --text-secondary: #8892b0;
+            --card-bg: rgba(17, 34, 64, 0.7);
+            --card-border: rgba(0, 212, 255, 0.3);
+            --glow-blue: 0 0 20px rgba(0, 212, 255, 0.7);
+            --glow-pink: 0 0 20px rgba(255, 0, 255, 0.7);
+            --glow-green: 0 0 20px rgba(0, 255, 157, 0.7);
+            --glow-yellow: 0 0 20px rgba(255, 215, 0, 0.7);
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,26 +30,25 @@
         }
         
         body {
-            background: linear-gradient(135deg, #2c0735, #1a0a25, #0f3460);
-            font-family: 'Arial Rounded MT Bold', 'Segoe UI', Arial, sans-serif;
+            background: var(--primary-dark);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            color: white;
+            color: var(--text-primary);
         }
         
         #game-container {
             position: relative;
             width: 900px;
             height: 600px;
-            background: linear-gradient(to bottom, #1a0a25, #2c0735);
+            background: linear-gradient(to bottom, var(--secondary-dark), #1a1a2e);
             border-radius: 20px;
-            box-shadow: 0 0 30px rgba(255, 100, 200, 0.7),
-                        0 0 60px rgba(150, 50, 255, 0.5);
+            box-shadow: var(--glow-blue), var(--glow-pink);
             overflow: hidden;
-            border: 8px solid #ff1e8d;
+            border: 4px solid var(--accent-blue);
         }
         
         #stage {
@@ -39,8 +56,8 @@
             bottom: 0;
             width: 100%;
             height: 200px;
-            background: linear-gradient(to top, #3a1c45, #2a0f35);
-            border-top: 4px solid #ff1e8d;
+            background: linear-gradient(to top, #1a1a2e, #2a0f35);
+            border-top: 4px solid var(--accent-pink);
             z-index: 1;
         }
         
@@ -57,13 +74,13 @@
         
         #player {
             left: 80px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 220"><circle cx="90" cy="100" r="55" fill="%23ff5252"/><rect x="60" y="150" width="60" height="50" rx="15" fill="%23ff5252"/><circle cx="75" cy="90" r="10" fill="white"/><circle cx="105" cy="90" r="10" fill="white"/><circle cx="75" cy="90" r="5" fill="black"/><circle cx="105" cy="90" r="5" fill="black"/><path d="M80 120 Q90 130 100 120" stroke="black" stroke-width="3" fill="none"/></svg>');
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 220"><circle cx="90" cy="100" r="55" fill="%2300d4ff"/><rect x="60" y="150" width="60" height="50" rx="15" fill="%2300d4ff"/><circle cx="75" cy="90" r="10" fill="white"/><circle cx="105" cy="90" r="10" fill="white"/><circle cx="75" cy="90" r="5" fill="black"/><circle cx="105" cy="90" r="5" fill="black"/><path d="M80 120 Q90 130 100 120" stroke="black" stroke-width="3" fill="none"/></svg>');
             transform: scaleX(-1);
         }
         
         #opponent {
             right: 80px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 220"><circle cx="90" cy="100" r="55" fill="%234cc9f0"/><rect x="60" y="150" width="60" height="50" rx="15" fill="%234cc9f0"/><circle cx="75" cy="90" r="10" fill="white"/><circle cx="105" cy="90" r="10" fill="white"/><circle cx="75" cy="90" r="5" fill="black"/><circle cx="105" cy="90" r="5" fill="black"/><path d="M80 125 Q90 120 100 125" stroke="black" stroke-width="3" fill="none"/></svg>');
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 220"><circle cx="90" cy="100" r="55" fill="%23ff00ff"/><rect x="60" y="150" width="60" height="50" rx="15" fill="%23ff00ff"/><circle cx="75" cy="90" r="10" fill="white"/><circle cx="105" cy="90" r="10" fill="white"/><circle cx="75" cy="90" r="5" fill="black"/><circle cx="105" cy="90" r="5" fill="black"/><path d="M80 125 Q90 120 100 125" stroke="black" stroke-width="3" fill="none"/></svg>');
         }
         
         #arrow-container {
@@ -82,9 +99,9 @@
             position: relative;
             height: 100px;
             margin: 10px 0;
-            background: rgba(30, 10, 40, 0.6);
+            background: rgba(17, 34, 64, 0.6);
             border-radius: 50px;
-            border: 3px solid #7a3bff;
+            border: 3px solid var(--accent-blue);
             overflow: hidden;
         }
         
@@ -95,8 +112,8 @@
             top: 0;
             bottom: 0;
             width: 80px;
-            background: rgba(255, 255, 255, 0.15);
-            border-right: 4px solid #ffd700;
+            background: rgba(0, 212, 255, 0.15);
+            border-right: 4px solid var(--accent-yellow);
             z-index: 5;
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
         }
@@ -109,27 +126,27 @@
             background-repeat: no-repeat;
             background-position: center;
             z-index: 10;
-            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+            filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.8));
         }
         
-        /* 修复箭头颜色 - 确保所有方向都有正确颜色 */
-        .arrow.up { 
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="35,15 60,50 50,50 50,55 20,55 20,50 10,50" fill="%23ffcc00"/></svg>'); 
+        /* 箭头颜色使用主题色 */
+        .arrow.up {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="35,15 60,50 50,50 50,55 20,55 20,50 10,50" fill="%2300ff9d"/></svg>');
         }
-        .arrow.down { 
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="35,55 10,20 20,20 20,15 50,15 50,20 60,20" fill="%234cc9f0"/></svg>'); 
+        .arrow.down {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="35,55 10,20 20,20 20,15 50,15 50,20 60,20" fill="%2300d4ff"/></svg>');
         }
-        .arrow.left { 
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="15,35 50,10 50,20 55,20 55,50 50,50 50,60" fill="%23ff5252"/></svg>'); 
+        .arrow.left {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="15,35 50,10 50,20 55,20 55,50 50,50 50,60" fill="%23ff00ff"/></svg>');
         }
-        .arrow.right { 
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="55,35 20,10 20,20 15,20 15,50 20,50 20,60" fill="%234ade80"/></svg>'); 
+        .arrow.right {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="55,35 20,10 20,20 15,20 15,50 20,50 20,60" fill="%23ffd700"/></svg>');
         }
         
         .arrow.hit {
             transform: scale(1.3);
             opacity: 0.8;
-            filter: drop-shadow(0 0 10px white) drop-shadow(0 0 20px yellow);
+            filter: drop-shadow(0 0 10px white) drop-shadow(0 0 20px var(--accent-green));
         }
         
         .arrow.miss {
@@ -146,7 +163,7 @@
             font-weight: bold;
             opacity: 0;
             z-index: 30;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.9);
             animation: judgment-fade 1s forwards;
         }
         
@@ -156,10 +173,10 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
         }
         
-        .sick { color: #ffd700; text-shadow: 0 0 20px #ffd700; }
-        .good { color: #4ade80; text-shadow: 0 0 15px #4ade80; }
-        .bad { color: #ff9e6d; text-shadow: 0 0 10px #ff9e6d; }
-        .miss { color: #ff5252; text-shadow: 0 0 15px #ff5252; }
+        .sick { color: var(--accent-green); text-shadow: 0 0 20px var(--accent-green); }
+        .good { color: var(--accent-blue); text-shadow: 0 0 15px var(--accent-blue); }
+        .bad { color: var(--accent-yellow); text-shadow: 0 0 10px var(--accent-yellow); }
+        .miss { color: var(--accent-pink); text-shadow: 0 0 15px var(--accent-pink); }
         
         #score-container {
             position: absolute;
@@ -168,12 +185,12 @@
             text-align: right;
             z-index: 20;
             font-size: 28px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
         }
         
         #score {
             font-weight: bold;
-            color: #ffd700;
+            color: var(--accent-green);
             font-size: 42px;
             margin-top: 5px;
         }
@@ -181,14 +198,14 @@
         #combo {
             font-size: 24px;
             margin-top: 5px;
-            color: #ff1e8d;
+            color: var(--accent-pink);
             font-weight: bold;
         }
         
         #accuracy {
             font-size: 24px;
             margin-top: 5px;
-            color: #4ade80;
+            color: var(--accent-blue);
             font-weight: bold;
         }
         
@@ -208,7 +225,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(20, 5, 30, 0.92);
+            background: rgba(10, 25, 47, 0.95);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -216,6 +233,7 @@
             z-index: 100;
             text-align: center;
             padding: 20px;
+            border-radius: 20px;
         }
         
         #game-over {
@@ -225,15 +243,14 @@
         h1 {
             font-size: 72px;
             margin-bottom: 20px;
-            background: linear-gradient(to right, #ff1e8d, #ff5252, #ffc107, #4ade80, #4cc9f0);
+            background: linear-gradient(to right, var(--accent-pink), var(--accent-blue), var(--accent-green), var(--accent-yellow));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
             letter-spacing: -3px;
             margin-bottom: 40px;
             font-weight: 900;
-            text-stroke: 1px rgba(255, 255, 255, 0.3);
         }
         
         .subtitle {
@@ -241,12 +258,12 @@
             margin-bottom: 40px;
             max-width: 700px;
             line-height: 1.4;
-            color: #e0e0ff;
+            color: var(--text-secondary);
         }
         
         .instructions {
-            background: rgba(40, 15, 60, 0.85);
-            border: 3px solid #7a3bff;
+            background: var(--card-bg);
+            border: 3px solid var(--accent-blue);
             border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
@@ -256,18 +273,18 @@
         }
         
         .instructions kbd {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid #ff1e8d;
+            background: rgba(0, 212, 255, 0.2);
+            border: 2px solid var(--accent-pink);
             border-radius: 8px;
             padding: 3px 8px;
             margin: 0 2px;
             font-family: monospace;
             font-weight: bold;
-            box-shadow: 0 0 5px rgba(255, 30, 141, 0.7);
+            box-shadow: 0 0 5px rgba(255, 0, 255, 0.7);
         }
         
         button {
-            background: linear-gradient(to bottom, #ff1e8d, #cc1670);
+            background: linear-gradient(to bottom, var(--accent-blue), #0066cc);
             color: white;
             border: none;
             padding: 20px 60px;
@@ -277,27 +294,27 @@
             cursor: pointer;
             font-weight: bold;
             letter-spacing: 2px;
-            box-shadow: 0 5px 0 #9e0f5a,
-                        0 0 30px rgba(255, 30, 141, 0.7),
-                        0 0 60px rgba(255, 30, 141, 0.4);
+            box-shadow: 0 5px 0 #004d99,
+                        0 0 30px rgba(0, 212, 255, 0.7),
+                        0 0 60px rgba(0, 212, 255, 0.4);
             transition: all 0.1s ease;
             position: relative;
             overflow: hidden;
         }
         
         button:hover {
-            background: linear-gradient(to bottom, #ff3a9d, #e01a7a);
+            background: linear-gradient(to bottom, var(--accent-pink), #cc00cc);
             transform: translateY(-2px);
-            box-shadow: 0 7px 0 #9e0f5a,
-                        0 0 35px rgba(255, 30, 141, 0.8),
-                        0 0 70px rgba(255, 30, 141, 0.5);
+            box-shadow: 0 7px 0 #990099,
+                        0 0 35px rgba(255, 0, 255, 0.8),
+                        0 0 70px rgba(255, 0, 255, 0.5);
         }
         
         button:active {
             transform: translateY(3px);
-            box-shadow: 0 2px 0 #9e0f5a,
-                        0 0 25px rgba(255, 30, 141, 0.7),
-                        0 0 50px rgba(255, 30, 141, 0.4);
+            box-shadow: 0 2px 0 #990099,
+                        0 0 25px rgba(255, 0, 255, 0.7),
+                        0 0 50px rgba(255, 0, 255, 0.4);
         }
         
         button::after {
@@ -319,7 +336,7 @@
         
         .start-hint {
             font-size: 24px;
-            color: #ffd700;
+            color: var(--accent-yellow);
             margin-top: 30px;
             animation: blink 1.5s infinite;
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
@@ -344,13 +361,13 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            background: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
         }
         
         .beat-light.active {
-            background: #ff1e8d;
-            box-shadow: 0 0 20px #ff1e8d, 0 0 40px #ff1e8d;
+            background: var(--accent-pink);
+            box-shadow: 0 0 20px var(--accent-pink), 0 0 40px var(--accent-pink);
             transform: scale(1.3);
         }
         
@@ -397,7 +414,7 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(0, 212, 255, 0.2);
             z-index: 1;
         }
     </style>
