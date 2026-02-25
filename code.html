@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cyber Center - Initializing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1f3b61",
+                        "cyber-yellow": "#fbbf24",
+                        "cyber-red": "#ef4444",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0a0c10",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .cyber-grid {
+            background-image: 
+                linear-gradient(to right, rgba(251, 191, 36, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(251, 191, 36, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .neon-glow-yellow {
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+        }
+        .neon-glow-red {
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(251, 191, 36, 0.1);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 overflow-hidden">
+<div class="relative flex h-screen w-full flex-col cyber-grid">
+<!-- Background Accents -->
+<div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+<div class="absolute -top-24 -left-24 w-96 h-96 bg-cyber-red/10 rounded-full blur-[120px]"></div>
+<div class="absolute -bottom-24 -right-24 w-96 h-96 bg-cyber-yellow/10 rounded-full blur-[120px]"></div>
+</div>
+<div class="layout-container flex h-full grow flex-col relative z-10">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between border-b border-cyber-yellow/20 px-10 py-4 bg-background-dark/80 backdrop-blur-md">
+<div class="flex items-center gap-4">
+<div class="size-8 text-cyber-yellow drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<div class="flex flex-col">
+<h2 class="text-slate-100 text-xl font-black leading-tight tracking-tighter uppercase italic">Cyber Center</h2>
+<span class="text-[10px] text-cyber-yellow font-bold tracking-[0.2em]">OPERATIONAL SECTOR 7-G</span>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-2 px-3 py-1 border border-cyber-red/30 rounded bg-cyber-red/5">
+<span class="material-symbols-outlined text-cyber-red text-sm">emergency_home</span>
+<span class="text-cyber-red text-xs font-bold uppercase tracking-widest">Protocol Red Active</span>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-800/50 text-slate-300 border border-slate-700 hover:border-cyber-yellow hover:text-cyber-yellow transition-all">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-800/50 text-slate-300 border border-slate-700 hover:border-cyber-red hover:text-cyber-red transition-all">
+<span class="material-symbols-outlined">power_settings_new</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content: Loading State -->
+<main class="flex-1 flex flex-col items-center justify-center px-4 relative">
+<!-- Decorative Elements -->
+<div class="absolute left-10 top-1/2 -translate-y-1/2 flex flex-col gap-8 opacity-40">
+<div class="flex flex-col gap-1">
+<div class="w-12 h-1 bg-cyber-yellow"></div>
+<div class="w-8 h-1 bg-cyber-yellow/50"></div>
+<div class="w-16 h-1 bg-cyber-red"></div>
+</div>
+<div class="text-[10px] font-mono text-slate-500 uppercase vertical-text tracking-[0.5em]" style="writing-mode: vertical-rl;">Grid_Latency_Subroutine_v4</div>
+</div>
+<!-- Central Status Container -->
+<div class="max-w-2xl w-full flex flex-col items-center gap-12">
+<div class="text-center">
+<h1 class="text-slate-100 tracking-[0.25em] text-5xl font-black leading-tight mb-2 italic">INITIALIZING SYSTEM</h1>
+<div class="flex items-center justify-center gap-3">
+<span class="h-[2px] w-12 bg-cyber-red"></span>
+<p class="text-cyber-yellow text-sm font-bold tracking-[0.4em] uppercase">Neural-Link Sync in Progress</p>
+<span class="h-[2px] w-12 bg-cyber-red"></span>
+</div>
+</div>
+<!-- Futuristic Progress Bar -->
+<div class="w-full flex flex-col gap-4">
+<div class="flex justify-between items-end px-1">
+<div class="flex flex-col">
+<span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Data Stream</span>
+<span class="text-slate-100 font-mono text-lg">65.42<span class="text-cyber-yellow font-bold">%</span></span>
+</div>
+<div class="flex gap-1 mb-1">
+<div class="w-2 h-2 bg-cyber-yellow neon-glow-yellow"></div>
+<div class="w-2 h-2 bg-cyber-yellow/20"></div>
+<div class="w-2 h-2 bg-cyber-yellow/20"></div>
+</div>
+</div>
+<div class="relative h-4 w-full bg-slate-900 border border-slate-800 p-1 overflow-hidden">
+<div class="h-full bg-gradient-to-r from-cyber-red via-cyber-yellow to-cyber-yellow neon-glow-yellow relative" style="width: 65%;">
+<div class="absolute top-0 right-0 h-full w-2 bg-white blur-[2px]"></div>
+</div>
+</div>
+<div class="flex justify-between text-[10px] font-mono text-slate-500 tracking-tighter uppercase italic">
+<span>Sector_01_Auth</span>
+<span>Grid_Mesh_Active</span>
+<span>Secure_Handshake</span>
+</div>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-3 gap-6 w-full">
+<div class="group flex flex-col gap-2 rounded-lg p-6 bg-slate-900/50 border-l-4 border-cyber-yellow border-t border-r border-b border-slate-800 hover:bg-slate-800/50 transition-all">
+<p class="text-slate-400 text-xs font-bold uppercase tracking-widest group-hover:text-cyber-yellow transition-colors">Grid Latency</p>
+<div class="flex items-baseline gap-2">
+<p class="text-slate-100 tracking-tight text-3xl font-black italic">2<span class="text-sm font-normal not-italic ml-1">MS</span></p>
+<span class="text-cyber-red text-xs font-bold">-12.5%</span>
+</div>
+</div>
+<div class="group flex flex-col gap-2 rounded-lg p-6 bg-slate-900/50 border-l-4 border-cyber-red border-t border-r border-b border-slate-800 hover:bg-slate-800/50 transition-all">
+<p class="text-slate-400 text-xs font-bold uppercase tracking-widest group-hover:text-cyber-red transition-colors">Uptime</p>
+<div class="flex items-baseline gap-2">
+<p class="text-slate-100 tracking-tight text-3xl font-black italic">99.9<span class="text-sm font-normal not-italic ml-1">%</span></p>
+<span class="text-cyber-yellow text-xs font-bold">+0.01%</span>
+</div>
+</div>
+<div class="group flex flex-col gap-2 rounded-lg p-6 bg-slate-900/50 border-l-4 border-cyber-yellow border-t border-r border-b border-slate-800 hover:bg-slate-800/50 transition-all">
+<p class="text-slate-400 text-xs font-bold uppercase tracking-widest group-hover:text-cyber-yellow transition-colors">Security</p>
+<div class="flex items-baseline gap-2">
+<p class="text-slate-100 tracking-tight text-3xl font-black italic uppercase">MAX</p>
+<span class="material-symbols-outlined text-cyber-yellow text-sm">verified_user</span>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute right-10 bottom-10 flex flex-col items-end">
+<div class="w-64 h-32 opacity-20 relative border-r border-b border-cyber-yellow">
+<div class="absolute bottom-2 right-2 text-[8px] font-mono text-cyber-yellow leading-tight text-right">
+                             OS_KERNEL: VER_8.0.2<br/>
+                             UI_SHELL: CYBER_CORE_X<br/>
+                             DISTRICT: NIGHT_V_01<br/>
+                             STATUS: STABLE
+                         </div>
+</div>
+</div>
+</main>
+<!-- Footer Ticker -->
+<footer class="h-10 bg-cyber-yellow flex items-center overflow-hidden">
+<div class="flex whitespace-nowrap gap-12 text-background-dark font-black text-xs uppercase tracking-[0.3em] italic">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">warning</span> CAUTION: HIGH ENERGY NEON PROTOCOL ACTIVE</span>
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">bolt</span> POWER GRID STABILIZED AT 104%</span>
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">security</span> CRYPTO-LOCKS ENGAGED</span>
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">warning</span> CAUTION: HIGH ENERGY NEON PROTOCOL ACTIVE</span>
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">bolt</span> POWER GRID STABILIZED AT 104%</span>
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">security</span> CRYPTO-LOCKS ENGAGED</span>
+</div>
+</footer>
+</div>
+</div>
+</body></html>
