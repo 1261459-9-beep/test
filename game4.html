@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>彈珠波子機 - 可玩版</title>
     <style>
+        /* CSS Variables for Dark Tech Theme */
+        :root {
+            --primary-dark: #0a192f;
+            --secondary-dark: #112240;
+            --accent-blue: #00d4ff;
+            --accent-pink: #ff00ff;
+            --accent-green: #00ff9d;
+            --accent-yellow: #ffd700;
+            --text-primary: #e6f1ff;
+            --text-secondary: #8892b0;
+            --card-bg: rgba(17, 34, 64, 0.7);
+            --card-border: rgba(0, 212, 255, 0.3);
+            --glow-blue: 0 0 20px rgba(0, 212, 255, 0.7);
+            --glow-pink: 0 0 20px rgba(255, 0, 255, 0.7);
+            --glow-green: 0 0 20px rgba(0, 255, 157, 0.7);
+            --glow-yellow: 0 0 20px rgba(255, 215, 0, 0.7);
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,24 +30,25 @@
         }
         
         body {
-            background: #121212;
-            font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+            background: var(--primary-dark);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            color: var(--text-primary);
         }
         
         .game-container {
             position: relative;
             width: 400px;
             height: 600px;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            background: linear-gradient(135deg, var(--secondary-dark), #1a1a2e);
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-            border: 3px solid gold;
+            box-shadow: var(--glow-blue);
+            border: 2px solid var(--accent-blue);
         }
         
         .pinball-table {
@@ -45,14 +64,16 @@
             top: 10px;
             left: 10px;
             right: 10px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(17, 34, 64, 0.9);
             padding: 10px;
             border-radius: 10px;
             display: flex;
             justify-content: space-between;
-            color: gold;
+            color: var(--accent-blue);
             font-weight: bold;
             z-index: 10;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
         }
         
         .score-item {
@@ -62,10 +83,12 @@
         .score-label {
             font-size: 0.8rem;
             opacity: 0.8;
+            color: var(--text-secondary);
         }
         
         .score-value {
             font-size: 1.2rem;
+            color: var(--accent-green);
         }
         
         .play-area {
@@ -78,6 +101,7 @@
             border-radius: 10px;
             overflow: hidden;
             perspective: 1000px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
         }
         
         .flippers {
@@ -92,11 +116,12 @@
         .flipper {
             width: 80px;
             height: 25px;
-            background: #ff6600;
+            background: var(--accent-blue);
             border-radius: 10px;
             transform-origin: center bottom;
             transition: transform 0.1s ease;
             cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
         }
         
         .flipper.left {
@@ -108,16 +133,17 @@
         }
         
         .flipper.active {
-            background: #ffcc00;
+            background: var(--accent-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.7);
         }
         
         .ball {
             position: absolute;
             width: 15px;
             height: 15px;
-            background: white;
+            background: var(--accent-green);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.8);
             z-index: 5;
         }
         
@@ -125,29 +151,29 @@
             position: absolute;
             width: 30px;
             height: 30px;
-            background: radial-gradient(circle, #ff6600, #ff0000);
+            background: radial-gradient(circle, var(--accent-pink), #ff0066);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255, 102, 0, 0.8);
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
         }
         
         .target {
             position: absolute;
             width: 25px;
             height: 25px;
-            background: linear-gradient(45deg, #00ff00, #00cc00);
+            background: linear-gradient(45deg, var(--accent-blue), #0099ff);
             border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 255, 0, 0.8);
+            box-shadow: 0 0 5px rgba(0, 212, 255, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
             font-weight: bold;
-            color: black;
+            color: white;
             font-size: 12px;
         }
         
         .ramp {
             position: absolute;
-            background: linear-gradient(to bottom, #ffcc00, #ff9900);
+            background: linear-gradient(to bottom, var(--accent-yellow), #ff9900);
             border-radius: 10px 10px 0 0;
         }
         
@@ -158,7 +184,7 @@
             transform: translateX(-50%);
             width: 80px;
             height: 30px;
-            background: #ff6600;
+            background: var(--accent-blue);
             border-radius: 15px;
             display: flex;
             justify-content: center;
@@ -166,11 +192,13 @@
             color: white;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            transition: all 0.2s ease;
         }
         
         .launch-button:hover {
-            background: #ff9900;
+            background: var(--accent-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.7);
         }
         
         .message {
@@ -178,14 +206,16 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(17, 34, 64, 0.95);
             padding: 20px 30px;
             border-radius: 15px;
-            color: gold;
+            color: var(--accent-blue);
             font-size: 1.2rem;
             text-align: center;
             z-index: 20;
             display: block;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--glow-blue);
         }
         
         .controls {
@@ -196,7 +226,7 @@
             display: flex;
             justify-content: center;
             gap: 10px;
-            color: #ccc;
+            color: var(--text-secondary);
             font-size: 0.8rem;
         }
         
@@ -206,30 +236,63 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(10, 25, 47, 0.95);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: gold;
+            color: var(--accent-blue);
             font-size: 2rem;
             font-weight: bold;
             z-index: 30;
             display: none;
+            border-radius: 15px;
         }
         
         .restart-btn {
             margin-top: 20px;
             padding: 10px 20px;
-            background: #ff6600;
+            background: var(--accent-blue);
             border-radius: 10px;
             color: white;
             cursor: pointer;
             font-weight: bold;
+            border: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
         }
         
         .restart-btn:hover {
-            background: #ff9900;
+            background: var(--accent-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.7);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .game-container {
+                width: 350px;
+                height: 550px;
+            }
+            
+            .flipper {
+                width: 70px;
+                height: 22px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .game-container {
+                width: 300px;
+                height: 500px;
+            }
+            
+            .score-board {
+                padding: 8px;
+            }
+            
+            .score-value {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
